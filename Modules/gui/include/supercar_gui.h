@@ -4,18 +4,18 @@
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class SuperCar_GUI; }
+namespace Ui { class SuperCarMain_GUI; }
 QT_END_NAMESPACE
 
-class SuperCar_GUI : public QMainWindow
+class SuperCarMain_GUI : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    SuperCar_GUI(QWidget *parent = nullptr);
-    ~SuperCar_GUI();
+    SuperCarMain_GUI(QWidget *parent = nullptr);
+    ~SuperCarMain_GUI();
 
 private:
-    Ui::SuperCar_GUI *ui;
+    Ui::SuperCarMain_GUI*ui;
 };
 #endif // SUPERCAR_GUI_H

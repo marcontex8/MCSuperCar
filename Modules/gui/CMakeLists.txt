@@ -18,7 +18,7 @@ set(PROJECT_SOURCES
         ${MCSC_MODULE_GUI_DIR}/source/supercar_gui.cpp
         ${MCSC_MODULE_GUI_DIR}/include/supercar_gui.h
         ${MCSC_MODULE_GUI_DIR}/ui/supercar_gui.ui
-)
+ "source/SimulationElementListModel.cpp" "include/SimulationElementListModel.h")
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${MCSC_MODULE_GUI_DIR}/ui/)
 
@@ -29,8 +29,12 @@ else()
 endif()
 
 
-target_include_directories(MCSuperCar_GUI PUBLIC "${MCSC_MODULE_GUI_DIR}/include")
+target_include_directories(MCSuperCar_GUI   PUBLIC
+            "${MCSC_MODULE_GUI_DIR}/include"
+             ${MCSC_MODULE_SIMULATOR_INCLUDE})
 
-target_link_libraries(MCSuperCar_GUI PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(MCSuperCar_GUI PRIVATE
+                Qt${QT_VERSION_MAJOR}::Widgets
+                Simulator)
 
 # TODO: Aggiungere i test e, se necessario, installare le destinazioni.

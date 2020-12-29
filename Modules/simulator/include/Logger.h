@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LOGGER_H
+#define LOGGER_H
+
 #include <string>
 #include <fstream>
 
@@ -14,3 +16,4 @@ public:
 	void log(std::string logMessage);
 };
 
+#endif
