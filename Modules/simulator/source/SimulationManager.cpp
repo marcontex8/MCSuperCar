@@ -15,14 +15,18 @@ SimulationManager::SimulationManager(SimulatedWorld* simulatedWorld)
 
 void SimulationManager::beginSimulation() {
 	simulationController.requireStop(false);
-	simulationController.requirePause(false);
+	simulationController.requirePause(true);
+	simulationController.setStop(false);
+	simulationController.setPause(false);
 	simulation_thread = std::thread(SimulationManager::simulate, simulatedWorld, &simulationController);
 	simulation_thread.detach();
 }
 
 void SimulationManager::endSimulation() {
 	simulationController.requireStop(true);
-	//Kill the simulation thread in some way from here?
+	while (!simulationController.getStop()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
 };
 
 void SimulationManager::playSimulation() {
@@ -31,30 +35,26 @@ void SimulationManager::playSimulation() {
 
 void SimulationManager::pauseSimulation() {
 	simulationController.requirePause(true);
+	while (!simulationController.getPause()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+	}
 };
 
-bool SimulationManager::simulationEnded() {
-	//TODO eliminare questo fafugnezzo
-	static int counter = 0;
-	if (counter == 100) {
-		return true;
-	}
-	counter++;
-	std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	return false;
-}
 void SimulationManager::simulate(SimulatedWorld* world, SimulationController* controller){
-	std::cout << "beginning simulate function" << std::endl;
+	std::cout << "SIMULATION | beginning simulate function" << std::endl;
 	while(true){
+		if (controller->isStopRequired()) {
+			controller->setStop(true);
+			std::cout << "SIMULATION | stop required, break" << std::endl;
+			break;
+		}
 		if (controller->isPauseRequired()) {
-			std::cout << "pause required, waiting 100ms" << std::endl;
+			controller->setPause(true);
+			std::cout << "SIMULATION | pause required, waiting 100ms" << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
-		if (controller->isStopRequired()) {
-			std::cout << "stop required" << std::endl;
-			break;
-		}
+		std::cout << "SIMULATION | simulation running." << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		world->applyToElements(simulatePhysic);
 

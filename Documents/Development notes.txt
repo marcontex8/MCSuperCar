@@ -1,0 +1,20 @@
+TODO
+- fix log system
+
+- now the element list in GUI is implemented using model-view framework of Qt.
+	This cause a huge number of calls to the data() funcion in SimulationElementListModel.
+	The problem is that the access to the simulationWorld data is exclusive, and so each call to data() is blocking.
+
+- world->getElementAtIndex, should be checked because it uses a lot of space and time.
+
+- introduce shared lock in order to allowa for concurrent read access of data, while exclusive writing access
+
+DEVELOPMENTS AREAS
+- Crearte OpenGL visualizer for the simulation world
+
+- Create custom simulation object that use inheritance from a common virtual class, and provide methods to simulate their behaviour and management.
+
+- Improve Qt GUI, introducing custom model-view modules that takes care of displaying and controlling each element (for now Controller, World).
+		This would improve the modularity of the program and it's maintainability.
+
+- Introduce controllers to interact with each simulation element.

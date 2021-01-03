@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QAbstractItemModel>
 #include <QListView>
+#include <qpushbutton.h>
 
 #include "supercar_gui.h"
 #include "ui_supercar_gui.h"
@@ -14,47 +15,30 @@
 
 int main(int argc, char *argv[])
 {
+	std::cout << "Inizio" << std::endl;
 	//INITIALIZING SIMULATOR
 
 	//Logger simulationLogger;
 	//simulationLogger.initialize();
 
 	simulation::SimulatedWorld world;
-	simulation::SimulationElement element1;
-	simulation::SimulationElement element2;
-	simulation::SimulationElement element3;
-	std::cout << "created elements" << std::endl;
-
-	world.addElement(element1);
-	world.addElement(element2);
-	world.addElement(element3);
-	std::cout << "added elements" << std::endl;
-
 	simulation::SimulationManager simulationManager(&world);
 	std::cout << "created manager" << std::endl;
 
 	simulationManager.simulationController.setSimulationIntervalMillis(20);
 	std::cout << "set interval" << std::endl;
 
-	simulationManager.beginSimulation();
-	std::cout << "simulation running" << std::endl;
-
-    // Unindented for quoting purposes:
-    std::vector<std::string> numbers{ "One","Two","Three","Four","Five" };
-
+	//simulationManager.beginSimulation();
+	//std::cout << "simulation running" << std::endl;
 
 
 	// INITIALIZING GUI
 	QApplication a(argc, argv);
-	SuperCarMain_GUI mainWindow;
-	Ui::SuperCarMain_GUI ui;
-	ui.setupUi(&mainWindow);
-
-    QAbstractItemModel* model = new SimulationElementListModel(numbers);
-
-    ui.elements_list_view->setModel(model);
+	
+	SuperCarMain_GUI mainWindow(&simulationManager);
 	mainWindow.show();
-    return a.exec();
+    
+	return a.exec();
 
 
 

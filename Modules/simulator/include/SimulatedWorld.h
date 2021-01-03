@@ -16,7 +16,9 @@ namespace simulation {
 		std::mutex dataMutex;
 
 	public:
-		int addElement(SimulationElement element);
+		int addElement(SimulationElement&& element);
+		int numberOfElements();
+		int getElementAtIndex(int index, SimulationElement* elementOut);
 		void doSomething();
 
 		template<typename F> void applyToElements(F elaboration) {

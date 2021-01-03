@@ -11,21 +11,42 @@ int SimulationController::getSimulationIntervalMillis() {
 	return this->simulationInterval;
 };
 
-
 bool SimulationController::isPauseRequired() {
 	std::lock_guard<std::mutex> guard(dataMutex);
-	return pause;
+	return pauseRequired;
 };
 
 bool SimulationController::isStopRequired() {
 	std::lock_guard<std::mutex> guard(dataMutex);
-	return stop;
+	return stopRequired;
 };
+
 void SimulationController::requirePause(bool require) {
 	std::lock_guard<std::mutex> guard(dataMutex);
-	pause = require;
+	pauseRequired = require;
 };
+
 void SimulationController::requireStop(bool require) {
 	std::lock_guard<std::mutex> guard(dataMutex);
-	stop = require;
+	stopRequired = require;
+};
+
+void SimulationController::setPause(bool value) {
+	std::lock_guard<std::mutex> guard(dataMutex);
+	pause = value;
+};
+
+void SimulationController::setStop(bool value) {
+	std::lock_guard<std::mutex> guard(dataMutex);
+	stop = value;
+};
+
+bool SimulationController::getPause() {
+	std::lock_guard<std::mutex> guard(dataMutex);
+	return pause;
+};
+
+bool SimulationController::getStop() {
+	std::lock_guard<std::mutex> guard(dataMutex);
+	return pause;
 };

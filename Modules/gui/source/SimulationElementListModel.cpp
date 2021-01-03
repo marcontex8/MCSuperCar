@@ -1,26 +1,34 @@
 #include "SimulationElementListModel.h"
+#include "SimulationElement.h"
 
-SimulationElementListModel::SimulationElementListModel(const std::vector<std::string>& strings, QObject* parent)
-    : QAbstractListModel(parent), strings(strings) {};
+#include <iostream>
+
+SimulationElementListModel::SimulationElementListModel(simulation::SimulatedWorld* world, QObject* parent)
+    : QAbstractListModel(parent), world(world) {};
 
 int SimulationElementListModel::rowCount(const QModelIndex& parent) const {
-    return strings.size();
+    return world->numberOfElements();
 };
 
 QVariant SimulationElementListModel::data(const QModelIndex& index, int role) const {
     if (!index.isValid())
         return QVariant();
+    //std::cout << "row: " << index.row() << "; col: " << index.column() << "; role : " << role << ";" << std::endl;
 
-    if (index.row() >= strings.size())
+    simulation::SimulationElement element;
+    int index_retrieved = world->getElementAtIndex(index.row(), &element);
+
+    if (index.row() != index_retrieved)
         return QVariant();
 
     if (role == Qt::DisplayRole)
-        return QVariant(QString::fromStdString(strings[index.row()]));
+        return QVariant(QString::fromStdString(element.name));
 
     else
         return QVariant();
 };
 
+/*
 QVariant SimulationElementListModel::headerData(int section, Qt::Orientation orientation,
     int role) const
 {
@@ -32,6 +40,7 @@ QVariant SimulationElementListModel::headerData(int section, Qt::Orientation ori
     else
         return QStringLiteral("Row %1").arg(section);
 }
+
 
 bool SimulationElementListModel::setData(const QModelIndex& index, const QVariant& value, int role) {
     if (role == Qt::EditRole) {
@@ -52,3 +61,4 @@ bool SimulationElementListModel::setData(const QModelIndex& index, const QVarian
 Qt::ItemFlags SimulationElementListModel::flags(const QModelIndex& index) const {
     return Qt::ItemIsEditable | QAbstractListModel::flags(index);
 };
+*/
