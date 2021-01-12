@@ -28,13 +28,12 @@ else()
     add_executable(MCSuperCar_GUI   ${PROJECT_SOURCES})
 endif()
 
-
 target_include_directories(MCSuperCar_GUI   PUBLIC
-            "${MCSC_MODULE_GUI_DIR}/include"
-             ${MCSC_MODULE_SIMULATOR_INCLUDE})
+            "${MCSC_MODULE_GUI_DIR}/include")
 
 target_link_libraries(MCSuperCar_GUI PRIVATE
                 Qt${QT_VERSION_MAJOR}::Widgets
-                Simulator)
+                Simulator
+                ViewerManager)
 
 # TODO: Aggiungere i test e, se necessario, installare le destinazioni.

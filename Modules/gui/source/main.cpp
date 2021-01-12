@@ -1,5 +1,8 @@
 #include <iostream>
 
+#include "world_viewer.h"
+
+
 #include <QApplication>
 #include <QAbstractItemModel>
 #include <QListView>
@@ -13,9 +16,13 @@
 #include "SimulationManager.h"
 #include "simulationSettings.h"
 
+#include "ViewerManager.h"
+
 int main(int argc, char *argv[])
 {
-	std::cout << "Inizio" << std::endl;
+	std::cout << "main.cpp: started" << std::endl;
+	
+
 	//INITIALIZING SIMULATOR
 
 	//Logger simulationLogger;
@@ -28,9 +35,11 @@ int main(int argc, char *argv[])
 	simulationManager.simulationController.setSimulationIntervalMillis(20);
 	std::cout << "set interval" << std::endl;
 
-	//simulationManager.beginSimulation();
-	//std::cout << "simulation running" << std::endl;
 
+
+	//INITIALIZING WORLD VIEWER
+	ViewerManager viewerManager(&world);
+	viewerManager.initializeWorldView();
 
 	// INITIALIZING GUI
 	QApplication a(argc, argv);
