@@ -37,7 +37,8 @@ include_directories("${MCSC_EXTERNAL_DIR}/glfw/include")
 set(GLAD_C "${MCSC_EXTERNAL_DIR}/glad/src/glad.c")
 include_directories("${MCSC_EXTERNAL_DIR}/glad/include")
 
-
+# stb
+include_directories("${MCSC_EXTERNAL_DIR}/stb")
 
 
 

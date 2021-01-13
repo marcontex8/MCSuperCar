@@ -11,6 +11,8 @@ TODO
 
 - use cmake to set the shader files position for reading and compiling
 
+- use FileSystem class (c++17), for accessing files!
+
 DEVELOPMENTS AREAS
 - Crearte OpenGL visualizer for the simulation world
 
