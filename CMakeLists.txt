@@ -40,7 +40,8 @@ include_directories("${MCSC_EXTERNAL_DIR}/glad/include")
 # stb
 include_directories("${MCSC_EXTERNAL_DIR}/stb")
 
-
+# glm
+include_directories("${MCSC_EXTERNAL_DIR}/glm")
 
 # ADD MODULES DIRECTORIES
 add_subdirectory (${MCSC_MODULES_DIR})
