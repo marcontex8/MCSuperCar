@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>656</width>
-    <height>805</height>
+    <width>658</width>
+    <height>364</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -180,16 +180,6 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QOpenGLWidget" name="openGLWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>330</y>
-      <width>631</width>
-      <height>431</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
@@ -261,7 +251,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>656</width>
+     <width>658</width>
      <height>21</height>
     </rect>
    </property>

@@ -74,6 +74,7 @@ ElementDrawer::~ElementDrawer() {
     glDeleteBuffers(1, &VBO);
     //glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
+    glDeleteTextures(1, &texture);
 }
 
 

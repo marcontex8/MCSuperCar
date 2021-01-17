@@ -4,19 +4,22 @@
 
 #include "SimulatedWorld.h"
 
+#include <map>
+#include "ElementDrawer.h"
+
+// OpenGL Libraries
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include <thread>
 
 // GLM
 #include <glm/glm.hpp>
-//#include <glm/gtc/matrix_transform.hpp>
-//#include <glm/gtc/type_ptr.hpp>
 
 class WorldViewer {
 private:
 	simulation::SimulatedWorld* world;
 	GLFWwindow* window;
+	std::vector<ElementDrawer*> elementsReferences;
 
 public:
 	WorldViewer(simulation::SimulatedWorld* world);
