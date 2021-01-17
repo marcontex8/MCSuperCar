@@ -4,31 +4,28 @@
 using namespace simulation;
 
 int SimulatedWorld::addElement(SimulationElement&& element) {
-	std::lock_guard<std::mutex> guard(dataMutex);
-	elements.push_back(element);
+	std::unique_lock<std::shared_mutex> lk(elementsVectorMutex);
+	elements.push_back(new SimulationElement(element));
 	std::cout << "SimulatedWorld::addElement" << std::endl;
 	return 1;
 };
 
-int SimulatedWorld::numberOfElements() {
-	std::lock_guard<std::mutex> guard(dataMutex);
-	return elements.size();
+int SimulatedWorld::numberOfElements() const {
+	std::shared_lock<std::shared_mutex> lk(elementsVectorMutex);
+	return (int)elements.size();
 }
 
-int SimulatedWorld::getElementAtIndex(int index, SimulationElement* elementOut) {
-	std::lock_guard<std::mutex> guard(dataMutex);
-	//std::cout << "SimulatedWorld | Required index " << index << std::endl;
+SimulationElement* SimulatedWorld::getElementAtIndex(int index) const {
+	std::shared_lock<std::shared_mutex> lk(elementsVectorMutex);
+	std::cout << "SimulatedWorld | Required index " << index << std::endl;
 	if (index > elements.size()) {
-		return 0;
+		return nullptr;
 	}
 	else
 	{
-		*elementOut = elements[index];
-		return index;
+		return elements[index];
 	}
 }
-
-
 
 void SimulatedWorld::doSomething() {
 	std::cout << "Ciao!" << std::endl;

@@ -30,7 +30,7 @@ namespace simulation{
 	private:
 		std::thread simulation_thread;
 		static void simulate(SimulatedWorld* world, SimulationController* controller);
-		static void simulatePhysic(SimulationElement& element);
+		static void simulatePhysic(SimulationElement* element);
 	};
 
 

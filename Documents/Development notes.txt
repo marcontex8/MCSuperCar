@@ -1,20 +1,11 @@
 TODO
 - fix log system
 
-- now the element list in GUI is implemented using model-view framework of Qt.
-	This cause a huge number of calls to the data() funcion in SimulationElementListModel.
-	The problem is that the access to the simulationWorld data is exclusive, and so each call to data() is blocking.
-
-- world->getElementAtIndex, should be checked because it uses a lot of space and time.
-
-- introduce shared lock in order to allowa for concurrent read access of data, while exclusive writing access
-
 - use cmake to set the shader files position for reading and compiling
 
 - use FileSystem class (c++17), for accessing files!
 
 DEVELOPMENTS AREAS
-- Crearte OpenGL visualizer for the simulation world
 
 - Create custom simulation object that use inheritance from a common virtual class, and provide methods to simulate their behaviour and management.
 
@@ -26,3 +17,25 @@ DEVELOPMENTS AREAS
 - Move all the required external code inside the "External" folder, in order to obtain a standalone version of the program.
 
 - Improve robustness of CMake, allowing for a stable compilation of the program in different environments
+
+
+
+
+COMPLETED 
+
+- now the element list in GUI is implemented using model-view framework of Qt.
+	This cause a huge number of calls to the data() funcion in SimulationElementListModel.
+	The problem is that the access to the simulationWorld data is exclusive, and so each call to data() is blocking.
+solution:
+	The problem was solved introducing a shared_mutex that allows for multiple reading access, while unique writing access.
+
+
+- world->getElementAtIndex, should be checked because it uses a lot of space and time.
+solution:
+	the world vector now contains only pointers to the elements, and not the elements themselves... so now there is no need to instantiate elements for reading data
+
+- introduce shared lock in order to allowa for concurrent read access of data, while exclusive writing access
+done.
+
+- Crearte OpenGL visualizer for the simulation world
+done.

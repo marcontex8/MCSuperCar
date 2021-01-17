@@ -43,5 +43,10 @@ include_directories("${MCSC_EXTERNAL_DIR}/stb")
 # glm
 include_directories("${MCSC_EXTERNAL_DIR}/glm")
 
+# eigen
+include_directories("${MCSC_EXTERNAL_DIR}/eigen")
+
+
+
 # ADD MODULES DIRECTORIES
 add_subdirectory (${MCSC_MODULES_DIR})

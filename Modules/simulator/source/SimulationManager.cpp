@@ -66,11 +66,12 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 	}
 }
 
-void SimulationManager::simulatePhysic(SimulationElement& element){
+void SimulationManager::simulatePhysic(SimulationElement* element){
 	int milliseconds = 20;
-	element.x += (double)milliseconds / 1000 * 10;
-	element.z += (double)milliseconds / 1000 * 5;
-	element.y += (double)milliseconds / 1000 * 2;
+	element->setPosition(
+		element->getPosition()[0] + (double)milliseconds / 1000 * 10,
+		element->getPosition()[1] + (double)milliseconds / 1000 * 5,
+		element->getPosition()[2] + (double)milliseconds / 1000 * 7);
 	/*
 	simulationLogger->log("Element in (" +
 		std::to_string(element.x) +

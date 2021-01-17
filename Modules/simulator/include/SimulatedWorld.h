@@ -2,7 +2,7 @@
 #define SIMULATEDWORLD_H
 
 #include<vector>
-#include<mutex>
+#include<shared_mutex>
 
 
 #include "SimulationElement.h"
@@ -12,18 +12,20 @@ namespace simulation {
 	class SimulatedWorld
 	{
 	private:
-		std::vector<SimulationElement> elements;
-		std::mutex dataMutex;
-
+		std::vector<SimulationElement*> elements;
+		mutable std::shared_mutex elementsVectorMutex;
 	public:
 		int addElement(SimulationElement&& element);
-		int numberOfElements();
-		int getElementAtIndex(int index, SimulationElement* elementOut);
+		int numberOfElements() const;
+		SimulationElement* getElementAtIndex(int index) const;
 		void doSomething();
 
 		template<typename F> void applyToElements(F elaboration) {
-			std::lock_guard<std::mutex> guard(dataMutex);
+			std::shared_lock<std::shared_mutex> lk(elementsVectorMutex);
+			std::cout << "Called applyToElements() " << std::endl;
+			int i = 0;
 			for (auto it = elements.begin(); it != elements.end(); ++it) {
+				std::cout << "i = " << i++ << std::endl;
 				elaboration(*it);
 			}
 		}

@@ -52,11 +52,21 @@ void WorldViewer::operator()() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         world->applyToElements(
-            [&view, &projection](simulation::SimulationElement& element) {
+            [&view, &projection](simulation::SimulationElement* element) {
+                if (element == nullptr) {
+                    std::cout << "this element is nullptr" << std::endl;
+                    return;
+                }
+                std::cout << "valid element" << std::endl;
                 ElementDrawer myGenericElement;
                 // define object position
                 glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(element.x, element.y, element.z));
+                model = glm::translate(model, glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]));
+                std::cout << "x: " << element->getPosition()[0]
+                    << "y: " << element->getPosition()[1]
+                    << "z: " << element->getPosition()[2]
+                    << std::endl;
+
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
                 myGenericElement.draw(model, view, projection);
             }

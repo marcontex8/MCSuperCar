@@ -15,14 +15,13 @@ QVariant SimulationElementListModel::data(const QModelIndex& index, int role) co
         return QVariant();
     //std::cout << "row: " << index.row() << "; col: " << index.column() << "; role : " << role << ";" << std::endl;
 
-    simulation::SimulationElement element;
-    int index_retrieved = world->getElementAtIndex(index.row(), &element);
+    simulation::SimulationElement* element = world->getElementAtIndex(index.row());
 
-    if (index.row() != index_retrieved)
+    if (element == nullptr)
         return QVariant();
 
     if (role == Qt::DisplayRole)
-        return QVariant(QString::fromStdString(element.name));
+        return QVariant(QString::fromStdString(element->name));
 
     else
         return QVariant();
