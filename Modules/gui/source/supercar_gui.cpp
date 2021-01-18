@@ -82,7 +82,12 @@ void SuperCarMain_GUI::simulationPause() {
 }
 
 void SuperCarMain_GUI::simulationAddElement() {
-    this->manager->simulatedWorld->addElement(simulation::SimulationElement());
+    static int id = 0;
+    std::string name("elemento");
+    Eigen::Vector3d position(0,0,0);
+    Eigen::Quaterniond orientation;
+    double mass = 10.0;
+    this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
     std::cout << "New Element Added." << std::endl;
     QString result = "New Element Added";
     emit elementsListModel->layoutChanged();

@@ -15,7 +15,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include<map>
 
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
     std::cout << "WorldViewer | constructor" << std::endl;
@@ -40,6 +40,8 @@ void WorldViewer::operator()() {
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+    //std::map<int, ElementDrawer*> elementsDrawer;
+    std::vector<ElementDrawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window))
     {
         static int i = 0;
@@ -52,13 +54,28 @@ void WorldViewer::operator()() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         world->applyToElements(
-            [&view, &projection](simulation::SimulationElement* element) {
+            [&elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
                     std::cout << "this element is nullptr" << std::endl;
                     return;
                 }
-                std::cout << "valid element" << std::endl;
-                ElementDrawer myGenericElement;
+                std::cout << "elementsDrawer.size() = " << elementsDrawer.size() << std::endl;
+                std::cout << "element->id = " << element->id << std::endl;
+
+                ElementDrawer* currentElement = nullptr;
+                if (element->id >= elementsDrawer.size()) {
+                    currentElement = new ElementDrawer();
+                    elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
+                    std::cout << "added new element to elementsDrawer" << std::endl;
+                }
+                else
+                {
+                    currentElement = elementsDrawer[element->id];
+                    if (currentElement == nullptr) {
+                        std::cout << "Questo non dovrebbe succedere" << std::endl;
+                        return;
+                    }
+                }
                 // define object position
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]));
@@ -68,7 +85,9 @@ void WorldViewer::operator()() {
                     << std::endl;
 
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-                myGenericElement.draw(model, view, projection);
+
+                currentElement->draw(model, view, projection);
+                
             }
         );
     
