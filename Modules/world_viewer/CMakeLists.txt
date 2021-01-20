@@ -5,7 +5,8 @@ add_library(ViewerManager
 	${GLAD_C}
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/ViewerManager.cpp"
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/world_viewer.cpp"
-	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/ElementDrawer.cpp")
+	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/ElementDrawer.cpp"
+	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/ElementOpenGLDefinitions.cpp")
 
 target_include_directories(ViewerManager PUBLIC ${MCSC_MODULE_WORLD_VIEWER_INCLUDE})
 

@@ -27,9 +27,11 @@ WorldViewer::~WorldViewer(){
 
 void WorldViewer::operator()() {
     std::cout << "WorldViewer | operator()" << std::endl;
-
     setupWindow();
     //getOpenGLInfo();
+
+    ElementOpenGLDefinitions* openglElements = new ElementOpenGLDefinitions();
+
     glEnable(GL_DEPTH_TEST);
     
     // define camera position
@@ -54,7 +56,7 @@ void WorldViewer::operator()() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         world->applyToElements(
-            [&elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
+            [openglElements, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
                     std::cout << "this element is nullptr" << std::endl;
                     return;
@@ -64,7 +66,7 @@ void WorldViewer::operator()() {
 
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    currentElement = new ElementDrawer();
+                    currentElement = new ElementDrawer(openglElements);
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     std::cout << "added new element to elementsDrawer" << std::endl;
                 }
@@ -131,6 +133,8 @@ int WorldViewer::setupWindow() {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    std::cerr << "GLAD initialized" << std::endl;
+
     return 0;
 }
 

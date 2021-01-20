@@ -1,4 +1,7 @@
 TODO
+
+- modify elements id mechanism, leaving the id choice to the simulated world class.
+
 - fix log system
 
 - use cmake to set the shader files position for reading and compiling
