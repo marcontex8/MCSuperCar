@@ -61,12 +61,16 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto delay = std::chrono::milliseconds(controller->getSimulationIntervalMillis()) - (stop - start);
 		//simulationLogger->log("delay for "+std::to_string(delay.count()));
-		std::this_thread::sleep_for(delay);
-		static int number_of_overruned_cycles = 0;
-		if (number_of_overruned_cycles > 3) {
+		static int number_of_overrunned_cycles = 0;
+		if (delay.count() < 0) {
+			number_of_overrunned_cycles++;
+			continue;
+		}
+		if (number_of_overrunned_cycles > 3) {
 			std::cerr << "ERROR: program over-runned for 3 cycles" << std::endl;
 			return;
 		}
+		std::this_thread::sleep_for(delay);
 	}
 }
 

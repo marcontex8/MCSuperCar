@@ -7,20 +7,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "ElementOpenGLDefinitions.h"
-
 class ElementDrawer {
-protected:
-    ElementOpenGLDefinitions* openglElements;
-
-    int modelLoc;
-    int viewLoc;
-    int projectionLoc;
-
 public:
-    ElementDrawer(ElementOpenGLDefinitions* openGLDefinitions);
-    virtual ~ElementDrawer();
-    void draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
+    virtual ~ElementDrawer() {};
+    virtual void draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection) = 0;
 };
 
 

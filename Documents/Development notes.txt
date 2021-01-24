@@ -8,7 +8,12 @@ TODO
 
 - use FileSystem class (c++17), for accessing files!
 
+- check results of shaders and textures compilation in order to make setup process stable! 
+
 DEVELOPMENTS AREAS
+
+- Create logging system for debug and execution checking. Logger class, with a logging function that allows for different ostream.
+	Create displayers in gui to allow the visualization of the different logs.
 
 - Create custom simulation object that use inheritance from a common virtual class, and provide methods to simulate their behaviour and management.
 

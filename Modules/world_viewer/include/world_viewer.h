@@ -21,6 +21,7 @@ private:
 	GLFWwindow* window;
 	std::vector<ElementDrawer*> elementsReferences;
 
+
 public:
 	WorldViewer(simulation::SimulatedWorld* world);
 	~WorldViewer();

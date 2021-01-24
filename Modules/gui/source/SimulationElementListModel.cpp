@@ -20,11 +20,12 @@ QVariant SimulationElementListModel::data(const QModelIndex& index, int role) co
     if (element == nullptr)
         return QVariant();
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole) {
         return QVariant(QString::fromStdString(element->name));
-
-    else
+    }
+    else {
         return QVariant();
+    }
 };
 
 /*

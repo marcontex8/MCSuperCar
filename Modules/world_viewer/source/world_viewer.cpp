@@ -17,6 +17,8 @@
 
 #include<map>
 
+#include <DrawersFactory.h>
+
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
     std::cout << "WorldViewer | constructor" << std::endl;
 }
@@ -30,7 +32,6 @@ void WorldViewer::operator()() {
     setupWindow();
     //getOpenGLInfo();
 
-    ElementOpenGLDefinitions* openglElements = new ElementOpenGLDefinitions();
 
     glEnable(GL_DEPTH_TEST);
     
@@ -42,21 +43,27 @@ void WorldViewer::operator()() {
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-    //std::map<int, ElementDrawer*> elementsDrawer;
+
+    DrawersFactory drawersFactory;
+
     std::vector<ElementDrawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window))
     {
         static int i = 0;
         std::cout << "running loop " << i++ << std::endl;
-
         processInput();
-
         // refresh background
         glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // define object position
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+
+        glm::vec3 color(1.0f, 1.0f, 1.0f);
+
         world->applyToElements(
-            [openglElements, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
+            [&drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
                     std::cout << "this element is nullptr" << std::endl;
                     return;
@@ -66,7 +73,7 @@ void WorldViewer::operator()() {
 
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    currentElement = new ElementDrawer(openglElements);
+                    currentElement = drawersFactory.newBoxDrawer();
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     std::cout << "added new element to elementsDrawer" << std::endl;
                 }
@@ -92,7 +99,6 @@ void WorldViewer::operator()() {
                 
             }
         );
-    
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

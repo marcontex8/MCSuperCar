@@ -6,7 +6,9 @@ add_library(Simulator
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulatedWorld.cpp"
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationController.cpp"
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationManager.cpp"
-	"${MCSC_MODULE_SIMULATOR_SOURCE}/Logger.cpp")
+	"${MCSC_MODULE_SIMULATOR_SOURCE}/Logger.cpp"
+	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationElementTriangle.cpp"
+	)
 
 target_include_directories(Simulator PUBLIC ${MCSC_MODULE_SIMULATOR_INCLUDE})
 
