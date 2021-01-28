@@ -16,4 +16,5 @@ target_include_directories(ViewerManager PUBLIC ${MCSC_MODULE_WORLD_VIEWER_INCLU
 target_link_libraries(ViewerManager
 							glfw
 							${GLFW_LIBRARIES}
-							Simulator	)
+							Simulator
+							Logger)

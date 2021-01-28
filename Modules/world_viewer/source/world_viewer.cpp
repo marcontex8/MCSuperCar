@@ -18,6 +18,8 @@
 #include<map>
 
 #include <DrawersFactory.h>
+#include "Logger.h"
+
 extern Logger logger;
 
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
