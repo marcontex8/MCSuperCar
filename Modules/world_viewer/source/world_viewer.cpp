@@ -15,18 +15,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Logger.h"
 
+extern Logger logger;
 
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
+    logger.log("WorldViewer | constructor", Logger::Topic::Simulation, Logger::Verbosity::Debug);
     std::cout << "WorldViewer | constructor" << std::endl;
 }
 
 
 WorldViewer::~WorldViewer(){
+    std::cout << "WorldViewer | destructor" << std::endl;
 }
 
 void WorldViewer::operator()() {
     std::cout << "WorldViewer | operator()" << std::endl;
+    logger.log("WorldViewer | operator()", Logger::Topic::Simulation, Logger::Verbosity::Debug);
 
     setupWindow();
     //getOpenGLInfo();
@@ -43,14 +48,15 @@ void WorldViewer::operator()() {
     while (!glfwWindowShouldClose(window))
     {
         static int i = 0;
-        std::cout << "running loop " << i++ << std::endl;
+        //std::cout << "running loop " << i++ << std::endl;
+        logger.log("running loop "+std::to_string( i++), Logger::Topic::Simulation, Logger::Verbosity::Debug);
 
         processInput();
 
         // refresh background
         glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        /*
         world->applyToElements(
             [&view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
@@ -71,7 +77,7 @@ void WorldViewer::operator()() {
                 myGenericElement.draw(model, view, projection);
             }
         );
-    
+    */
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

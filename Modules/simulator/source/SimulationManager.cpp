@@ -9,6 +9,8 @@
 
 using namespace simulation;
 
+extern Logger logger;
+
 SimulationManager::SimulationManager(SimulatedWorld* simulatedWorld)
 	:simulatedWorld(simulatedWorld) {};
 
@@ -41,6 +43,7 @@ void SimulationManager::pauseSimulation() {
 };
 
 void SimulationManager::simulate(SimulatedWorld* world, SimulationController* controller){
+	logger.log("SIMULATION | beginning simulate function", Logger::Topic::Simulation, Logger::Verbosity::Debug);
 	std::cout << "SIMULATION | beginning simulate function" << std::endl;
 	while(true){
 		if (controller->isStopRequired()) {
@@ -54,13 +57,15 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
+		logger.log("SIMULATION | simulation running", Logger::Topic::Simulation, Logger::Verbosity::Debug);
 		std::cout << "SIMULATION | simulation running." << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		world->applyToElements(simulatePhysic);
 
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto delay = std::chrono::milliseconds(controller->getSimulationIntervalMillis()) - (stop - start);
-		//simulationLogger->log("delay for "+std::to_string(delay.count()));
+		logger.log("delay for " + std::to_string(delay.count()), Logger::Topic::Simulation, Logger::Verbosity::Debug);
+		assert(delay.count() > 0);
 		std::this_thread::sleep_for(delay);
 		//TODO: deal with the overtime elaboration!
 	}

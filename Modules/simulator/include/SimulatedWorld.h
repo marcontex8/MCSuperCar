@@ -22,7 +22,7 @@ namespace simulation {
 
 		template<typename F> void applyToElements(F elaboration) {
 			std::shared_lock<std::shared_mutex> lk(elementsVectorMutex);
-			std::cout << "Called applyToElements() " << std::endl;
+			//std::cout << "Called applyToElements() " << std::endl;
 			int i = 0;
 			for (auto it = elements.begin(); it != elements.end(); ++it) {
 				std::cout << "i = " << i++ << std::endl;

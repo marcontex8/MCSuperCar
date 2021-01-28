@@ -6,6 +6,7 @@
 
 # keep only code
 /out
+/logs
 CMakeSettings.json
 
 

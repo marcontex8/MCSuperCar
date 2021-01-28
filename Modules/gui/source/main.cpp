@@ -18,15 +18,14 @@
 
 #include "ViewerManager.h"
 
+extern Logger logger = Logger();
+
 int main(int argc, char *argv[])
 {
 	std::cout << "main.cpp: started" << std::endl;
-	
-
 	//INITIALIZING SIMULATOR
 
-	//Logger simulationLogger;
-	//simulationLogger.initialize();
+	logger.log("iniziato!!!", Logger::Topic::Simulation, Logger::Verbosity::Debug);
 
 	simulation::SimulatedWorld world;
 	simulation::SimulationManager simulationManager(&world);
@@ -48,8 +47,6 @@ int main(int argc, char *argv[])
 	mainWindow.show();
     
 	return a.exec();
-
-
 
 	// INITIALIZING TERMINAL UI
 	/*

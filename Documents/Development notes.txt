@@ -5,6 +5,8 @@ TODO
 
 - use FileSystem class (c++17), for accessing files!
 
+- insert a call to std::this_thread::get_id() for each new thread in order to identiy them
+
 DEVELOPMENTS AREAS
 
 - Create custom simulation object that use inheritance from a common virtual class, and provide methods to simulate their behaviour and management.

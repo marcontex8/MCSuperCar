@@ -5,9 +5,9 @@ add_library(Simulator
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationElement.cpp"
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulatedWorld.cpp"
 	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationController.cpp"
-	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationManager.cpp"
-	"${MCSC_MODULE_SIMULATOR_SOURCE}/Logger.cpp")
+	"${MCSC_MODULE_SIMULATOR_SOURCE}/SimulationManager.cpp")
 
 target_include_directories(Simulator PUBLIC ${MCSC_MODULE_SIMULATOR_INCLUDE})
 
-target_link_libraries(Simulator ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Simulator ${CMAKE_THREAD_LIBS_INIT}
+								Logger)
