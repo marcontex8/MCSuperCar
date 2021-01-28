@@ -25,7 +25,7 @@ namespace simulation {
 			int id,
 			std::string name,
 			Eigen::Vector3d position,
-			Eigen::Quaterniond(),
+			Eigen::Quaterniond orientation,
 			double mass);
 		SimulationElement(const SimulationElement& other);
 

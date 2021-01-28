@@ -15,8 +15,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Logger.h"
+#include<map>
 
+#include <DrawersFactory.h>
 extern Logger logger;
 
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
@@ -35,6 +36,8 @@ void WorldViewer::operator()() {
 
     setupWindow();
     //getOpenGLInfo();
+
+
     glEnable(GL_DEPTH_TEST);
     
     // define camera position
@@ -45,6 +48,10 @@ void WorldViewer::operator()() {
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
+
+    DrawersFactory drawersFactory;
+
+    std::vector<ElementDrawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window))
     {
         static int i = 0;
@@ -52,19 +59,39 @@ void WorldViewer::operator()() {
         logger.log("running loop "+std::to_string( i++), Logger::Topic::Simulation, Logger::Verbosity::Debug);
 
         processInput();
-
         // refresh background
         glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        /*
+
+        // define object position
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+
+        glm::vec3 color(1.0f, 1.0f, 1.0f);
+
         world->applyToElements(
-            [&view, &projection](simulation::SimulationElement* element) {
+            [&drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
                     std::cout << "this element is nullptr" << std::endl;
                     return;
                 }
-                std::cout << "valid element" << std::endl;
-                ElementDrawer myGenericElement;
+                std::cout << "elementsDrawer.size() = " << elementsDrawer.size() << std::endl;
+                std::cout << "element->id = " << element->id << std::endl;
+
+                ElementDrawer* currentElement = nullptr;
+                if (element->id >= elementsDrawer.size()) {
+                    currentElement = drawersFactory.newBoxDrawer();
+                    elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
+                    std::cout << "added new element to elementsDrawer" << std::endl;
+                }
+                else
+                {
+                    currentElement = elementsDrawer[element->id];
+                    if (currentElement == nullptr) {
+                        std::cout << "Questo non dovrebbe succedere" << std::endl;
+                        return;
+                    }
+                }
                 // define object position
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]));
@@ -74,10 +101,11 @@ void WorldViewer::operator()() {
                     << std::endl;
 
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-                myGenericElement.draw(model, view, projection);
+
+                currentElement->draw(model, view, projection);
+                
             }
         );
-    */
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -118,6 +146,8 @@ int WorldViewer::setupWindow() {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    std::cerr << "GLAD initialized" << std::endl;
+
     return 0;
 }
 

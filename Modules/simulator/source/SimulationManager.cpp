@@ -64,19 +64,26 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto delay = std::chrono::milliseconds(controller->getSimulationIntervalMillis()) - (stop - start);
-		logger.log("delay for " + std::to_string(delay.count()), Logger::Topic::Simulation, Logger::Verbosity::Debug);
-		assert(delay.count() > 0);
+		//simulationLogger->log("delay for "+std::to_string(delay.count()));
+		static int number_of_overrunned_cycles = 0;
+		if (delay.count() < 0) {
+			number_of_overrunned_cycles++;
+			continue;
+		}
+		if (number_of_overrunned_cycles > 3) {
+			std::cerr << "ERROR: program over-runned for 3 cycles" << std::endl;
+			return;
+		}
 		std::this_thread::sleep_for(delay);
-		//TODO: deal with the overtime elaboration!
 	}
 }
 
 void SimulationManager::simulatePhysic(SimulationElement* element){
 	int milliseconds = 20;
 	element->setPosition(
-		element->getPosition()[0] + (double)milliseconds / 1000 * 10,
-		element->getPosition()[1] + (double)milliseconds / 1000 * 5,
-		element->getPosition()[2] + (double)milliseconds / 1000 * 7);
+		element->getPosition()[0] + (double)milliseconds / 10000 * cos((double)element->id / 5 * 2 * 3.14),
+		element->getPosition()[1] + (double)milliseconds / 1000 * sin((double)element->id / 5 * 2 * 3.14),
+		element->getPosition()[2]);
 	/*
 	simulationLogger->log("Element in (" +
 		std::to_string(element.x) +
