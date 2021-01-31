@@ -46,6 +46,7 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 	diagnostics.log("SIMULATION | beginning simulate function", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 	std::cout << "SIMULATION | beginning simulate function" << std::endl;
 	while(true){
+		diagnostics.log("new simulation loop");
 		if (controller->isStopRequired()) {
 			controller->setStop(true);
 			std::cout << "SIMULATION | stop required, break" << std::endl;

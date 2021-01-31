@@ -5,22 +5,45 @@
 
 Diagnostics::Diagnostics() : initial_time( std::chrono::steady_clock::now() )
 {
-	std::cout << "Logger constructor called." << std::endl;
-	initializeFileStream();
+	std::cout << "Diagnostics constructor called." << std::endl;
+	openFileStream();
+
+	// create the thread which process logged messages
+	std::thread loggerThread = std::thread(
+		[this]() {
+			std::cout << "Diagnostics thread started." << std::endl;
+			std::promise<bool> thread_terminate;
+			thread_terminated = thread_terminate.get_future(); //in order to check thread termination
+
+			processMessages();
+			//this is executed after processMessages terminates (because the termination flag was set).
+			thread_terminate.set_value(true);
+			std::cout << "Diagnostics thread terminating." << std::endl;
+		}
+	);
+	loggerThread.detach();
 }
 
-Diagnostics::~Diagnostics(){
-	std::cout << "Logger destructor called." << std::endl;
-	// get current system clock time
-	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-	std::string string_time(30, '\0');
-	std::strftime(&string_time[0], string_time.size(), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
-	std::chrono::steady_clock::duration time = std::chrono::steady_clock::now() - initial_time;
-	writeToFile(LoggedElement(time, Topic::Simulation, Verbosity::Debug, "Logging ended at: "+ string_time));
-	fileStream.close();
+Diagnostics::~Diagnostics()
+{
+	std::cout << "Diagnostics destructor called." << std::endl;
+	
+	//signal to the bakcground task to terminate and wait for them.
+	terminate_flag = true;
+	try {
+		thread_terminated.wait();
+		if (thread_terminated.get()) {
+			std::cout << "Diagnostics thread termiated correctly." << std::endl;
+		}
+	}
+	catch (std::future_error e) {
+		std::cout << "Diagnostics thread termination incorrect." << std::endl;
+
+	}
+	closeFileStream();
 }
 
-void Diagnostics::initializeFileStream() {
+void Diagnostics::openFileStream() {
 	std::lock_guard<std::mutex> lk(logMutex);
 
 	// get current system clock time
@@ -40,16 +63,22 @@ void Diagnostics::initializeFileStream() {
 	writeToFile(LoggedElement(time, Topic::Simulation, Verbosity::Debug,
 		"New log started at (tyme system) "+string_time+" in file "+logFile));
 
-	loggerThread = std::thread([this]() {processMessages(); });
-	loggerThread.detach();
-	
-
 	if (fileStream.is_open()) {
 		std::cout << "Logger file "+ logFile +" correctly initialized" << std::endl;
 	}
 	else {
 		std::cout << "Logger file " + logFile + " initialization failed" << std::endl;
 	}
+}
+
+void Diagnostics::closeFileStream() {
+	// get current system clock time
+	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	std::string string_time(30, '\0');
+	std::strftime(&string_time[0], string_time.size(), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+	std::chrono::steady_clock::duration time = std::chrono::steady_clock::now() - initial_time;
+	writeToFile(LoggedElement(time, Topic::Simulation, Verbosity::Debug, "Logging file closed at: " + string_time));
+	fileStream.close();
 }
 
 void Diagnostics::log(std::string logMessage, Topic topic, Verbosity verbosity) {
@@ -65,13 +94,24 @@ void Diagnostics::log(std::string logMessage, Topic topic, Verbosity verbosity) 
 void Diagnostics::processMessages() {
 	while (true) {
 		std::unique_lock<std::mutex> lk(logMutex);
-		
-		logCond.wait(lk, [this]() {return !logQueue.empty(); });
-		LoggedElement newLog = logQueue.front();
-		logQueue.pop();
-		lk.unlock();
-		writeToFile(newLog);
-		addToVector(newLog);
+		using namespace std::chrono_literals;
+		logCond.wait_for(lk, 100ms,
+			[this]() {
+				//std::cout << "!logQueue.empty() = " << !logQueue.empty() << std::endl;
+				//std::cout << "terminate_flag = " << terminate_flag << std::endl;
+				return terminate_flag || !logQueue.empty();
+			}
+		);
+		if (terminate_flag) {
+			break;	// break the loop in case of termiation request
+		}
+		if (!logQueue.empty()) {
+			LoggedElement newLog = logQueue.front();
+			logQueue.pop();
+			lk.unlock();
+			writeToFile(newLog);
+			addToVector(newLog);
+		}
 	}
 }
 
