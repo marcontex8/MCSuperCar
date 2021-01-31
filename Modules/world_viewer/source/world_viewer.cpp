@@ -18,12 +18,12 @@
 #include<map>
 
 #include <DrawersFactory.h>
-#include "Logger.h"
+#include "Diagnostics.h"
 
-extern Logger logger;
+extern Diagnostics diagnostics;
 
 WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
-    logger.log("WorldViewer | constructor", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+    diagnostics.log("WorldViewer | constructor", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
     std::cout << "WorldViewer | constructor" << std::endl;
 }
 
@@ -34,7 +34,7 @@ WorldViewer::~WorldViewer(){
 
 void WorldViewer::operator()() {
     std::cout << "WorldViewer | operator()" << std::endl;
-    logger.log("WorldViewer | operator()", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+    diagnostics.log("WorldViewer | operator()", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 
     setupWindow();
     //getOpenGLInfo();
@@ -58,7 +58,7 @@ void WorldViewer::operator()() {
     {
         static int i = 0;
         //std::cout << "running loop " << i++ << std::endl;
-        logger.log("running loop "+std::to_string( i++), Logger::Topic::Simulation, Logger::Verbosity::Debug);
+        diagnostics.log("running loop "+std::to_string( i++), Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 
         processInput();
         // refresh background

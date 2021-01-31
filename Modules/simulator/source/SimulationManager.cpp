@@ -4,12 +4,12 @@
 #include<algorithm>
 #include<chrono>
 
-#include "Logger.h"
+#include "Diagnostics.h"
 
 
 using namespace simulation;
 
-extern Logger logger;
+extern Diagnostics diagnostics;
 
 SimulationManager::SimulationManager(SimulatedWorld* simulatedWorld)
 	:simulatedWorld(simulatedWorld) {};
@@ -43,7 +43,7 @@ void SimulationManager::pauseSimulation() {
 };
 
 void SimulationManager::simulate(SimulatedWorld* world, SimulationController* controller){
-	logger.log("SIMULATION | beginning simulate function", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+	diagnostics.log("SIMULATION | beginning simulate function", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 	std::cout << "SIMULATION | beginning simulate function" << std::endl;
 	while(true){
 		if (controller->isStopRequired()) {
@@ -57,7 +57,7 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
-		logger.log("SIMULATION | simulation running", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+		diagnostics.log("SIMULATION | simulation running", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 		std::cout << "SIMULATION | simulation running." << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		world->applyToElements(simulatePhysic);

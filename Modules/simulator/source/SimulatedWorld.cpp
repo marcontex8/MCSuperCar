@@ -1,17 +1,17 @@
 #include "SimulatedWorld.h"
 #include<iostream>
-#include "Logger.h"
-
+#include "Diagnostics.h"
+#include <chrono>
 
 using namespace simulation;
 
-extern Logger logger;
+extern Diagnostics diagnostics;
 
 int SimulatedWorld::addElement(SimulationElement&& element) {
 	std::unique_lock<std::shared_mutex> lk(elementsVectorMutex);
 	elements.push_back(new SimulationElement(element));
 	std::cout << "SimulatedWorld::addElement" << std::endl;
-	logger.log("SimulatedWorld::addElement", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+	diagnostics.log("SimulatedWorld::addElement", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 	return 1;
 };
 

@@ -12,20 +12,20 @@
 #include "ui_supercar_gui.h"
 
 #include "SimulationElementListModel.h"
-#include "Logger.h"
+#include "Diagnostics.h"
 #include "SimulationManager.h"
 #include "simulationSettings.h"
 
 #include "ViewerManager.h"
 
-extern Logger logger = Logger();
+extern Diagnostics diagnostics = Diagnostics();
 
 int main(int argc, char *argv[])
 {
 	std::cout << "main.cpp: started" << std::endl;
 	//INITIALIZING SIMULATOR
 
-	logger.log("iniziato!!!", Logger::Topic::Simulation, Logger::Verbosity::Debug);
+	diagnostics.log("iniziato!!!", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 
 	simulation::SimulatedWorld world;
 	simulation::SimulationManager simulationManager(&world);

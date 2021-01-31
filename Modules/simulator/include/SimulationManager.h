@@ -4,7 +4,7 @@
 
 #include<thread>
 
-#include "Logger.h"
+#include "Diagnostics.h"
 #include "SimulationElement.h"
 #include "SimulatedWorld.h"
 #include "SimulationController.h"
