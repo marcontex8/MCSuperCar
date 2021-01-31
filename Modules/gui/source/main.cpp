@@ -22,6 +22,7 @@ extern Diagnostics diagnostics = Diagnostics();
 
 int main(int argc, char *argv[])
 {
+	std::locale::global(std::locale(""));
 	std::cout << "main.cpp: started" << std::endl;
 	//INITIALIZING SIMULATOR
 
