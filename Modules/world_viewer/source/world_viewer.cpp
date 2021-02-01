@@ -22,7 +22,7 @@
 
 extern Diagnostics diagnostics;
 
-WorldViewer::WorldViewer(simulation::SimulatedWorld* world):world(world), window(nullptr) {
+WorldViewer::WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world): terminationFlag(terminationFlag), world(world), window(nullptr) {
     diagnostics.log("WorldViewer | constructor", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
     std::cout << "WorldViewer | constructor" << std::endl;
 }
@@ -32,7 +32,7 @@ WorldViewer::~WorldViewer(){
     std::cout << "WorldViewer | destructor" << std::endl;
 }
 
-void WorldViewer::operator()() {
+void WorldViewer::runView() {
     std::cout << "WorldViewer | operator()" << std::endl;
     diagnostics.log("WorldViewer | operator()", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 
@@ -54,7 +54,7 @@ void WorldViewer::operator()() {
     DrawersFactory drawersFactory;
 
     std::vector<ElementDrawer*> elementsDrawer;
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window) && !(*terminationFlag))
     {
         static int i = 0;
         //std::cout << "running loop " << i++ << std::endl;

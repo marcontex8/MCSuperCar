@@ -20,12 +20,12 @@ private:
 	simulation::SimulatedWorld* world;
 	GLFWwindow* window;
 	std::vector<ElementDrawer*> elementsReferences;
-
+	std::atomic<bool>* terminationFlag;
 
 public:
-	WorldViewer(simulation::SimulatedWorld* world);
+	WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world);
 	~WorldViewer();
-	void operator()();
+	void runView();
 
 	int setupWindow();
 	void processInput();
