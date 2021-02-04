@@ -1,5 +1,10 @@
 ﻿set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(MCSC_MODULE_GUI_INCLUDE "${MCSC_MODULE_GUI_DIR}/include")
+set(MCSC_MODULE_GUI_SOURCE  "${MCSC_MODULE_GUI_DIR}/source")
+set(MCSC_MODULE_GUI_UI  "${MCSC_MODULE_GUI_DIR}/ui")
+
+
 # Required for Qt 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -14,11 +19,17 @@ set(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_RELEASE} -fprofile-arcs -ftest-c
 set_target_properties(Qt5::Core PROPERTIES MAP_IMPORTED_CONFIG_COVERAGE "DEBUG")
 
 set(PROJECT_SOURCES
-        ${MCSC_MODULE_GUI_DIR}/source/main.cpp
-        ${MCSC_MODULE_GUI_DIR}/source/supercar_gui.cpp
-        ${MCSC_MODULE_GUI_DIR}/include/supercar_gui.h
-        ${MCSC_MODULE_GUI_DIR}/ui/supercar_gui.ui
- "source/SimulationElementListModel.cpp" "include/SimulationElementListModel.h")
+        "${MCSC_MODULE_GUI_SOURCE}/main.cpp"
+        "${MCSC_MODULE_GUI_SOURCE}/supercar_gui.cpp"
+        "${MCSC_MODULE_GUI_INCLUDE}/supercar_gui.h"
+        "${MCSC_MODULE_GUI_UI}/supercar_gui.ui"
+
+        "${MCSC_MODULE_GUI_SOURCE}/DiagnosticsWindow.cpp"
+        "${MCSC_MODULE_GUI_INCLUDE}/DiagnosticsWindow.h"
+        "${MCSC_MODULE_GUI_UI}/DiagnosticsWindow.ui"
+
+        "${MCSC_MODULE_GUI_SOURCE}/SimulationElementListModel.cpp"
+        "${MCSC_MODULE_GUI_INCLUDE}/SimulationElementListModel.h")
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${MCSC_MODULE_GUI_DIR}/ui/)
 
@@ -29,7 +40,7 @@ else()
 endif()
 
 target_include_directories(MCSuperCar_GUI   PUBLIC
-            "${MCSC_MODULE_GUI_DIR}/include")
+            ${MCSC_MODULE_GUI_INCLUDE})
 
 target_link_libraries(MCSuperCar_GUI PRIVATE
                 Qt${QT_VERSION_MAJOR}::Widgets

@@ -11,6 +11,9 @@
 #include "supercar_gui.h"
 #include "ui_supercar_gui.h"
 
+#include "DiagnosticsWindow.h"
+#include "ui_supercar_gui.h"
+
 #include "SimulationElementListModel.h"
 #include "Diagnostics.h"
 #include "SimulationManager.h"
@@ -46,7 +49,9 @@ int main(int argc, char *argv[])
 	
 	SuperCarMain_GUI mainWindow(&simulationManager);
 	mainWindow.show();
-    
+
+	DiagnosticsWindow diagnosticWindow(&diagnostics);
+	diagnosticWindow.show();
 	return a.exec();
 
 	// INITIALIZING TERMINAL UI

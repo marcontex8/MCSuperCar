@@ -121,17 +121,45 @@ void Diagnostics::addToVector(LoggedElement log) {
 	std::string stringLog = formattedTime + "-" + verbosity_toString(verbosity) + " - " + message;
 	if (topic == Diagnostics::Topic::Simulation) {
 		std::lock_guard<std::mutex> lkSim(simulationLogMutex);
-		simulationLogs.push_back(stringLog);
+		simulationLogs.push(stringLog);
 	}
 	else if (topic == Diagnostics::Topic::Gui) {
 		std::lock_guard<std::mutex> lkGui(guiLogMutex);
-		guiLogs.push_back(stringLog);
+		guiLogs.push(stringLog);
 	} 
 	else if (topic == Diagnostics::Topic::Viewer) {
 		std::lock_guard<std::mutex> lkViewer(viewerLogMutex);
-		viewerLogs.push_back(stringLog);
+		viewerLogs.push(stringLog);
 	}
 }
+
+std::string Diagnostics::readFromQueue(Topic topic) {
+	std::string tmp = "";
+	if (topic == Diagnostics::Topic::Simulation) {
+		std::lock_guard<std::mutex> lkSim(simulationLogMutex);
+		if (!simulationLogs.empty()) {
+			tmp = simulationLogs.front();
+			simulationLogs.pop();
+		}
+	}
+	else if (topic == Diagnostics::Topic::Gui) {
+		std::lock_guard<std::mutex> lkGui(guiLogMutex);
+		if (!guiLogs.empty()) {
+			tmp = guiLogs.front();
+			guiLogs.pop();
+		}
+	}
+	else if (topic == Diagnostics::Topic::Viewer) {
+		std::lock_guard<std::mutex> lkViewer(viewerLogMutex);
+		if (!viewerLogs.empty()) {
+			tmp = viewerLogs.front();
+			viewerLogs.pop();
+
+		}
+	}
+	return tmp;
+}
+
 
 void Diagnostics::writeToFile(LoggedElement log) {
 	auto [time, topic, verbosity, message] = log;

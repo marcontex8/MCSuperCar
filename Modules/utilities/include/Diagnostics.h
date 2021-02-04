@@ -16,7 +16,6 @@
 #include <chrono>
 #include <ctime>
 
-
 class Diagnostics {
 public:
 	enum class Topic {
@@ -35,6 +34,7 @@ public:
 	~Diagnostics();
 	void log(std::string logMessage, Topic topic = Topic::Simulation, Verbosity verbosity = Verbosity::Debug);
 
+	std::string readFromQueue(Topic topic);
 private:
 	typedef std::chrono::steady_clock::duration logger_time_duration;
 	typedef std::tuple<logger_time_duration, Topic, Verbosity, std::string> LoggedElement;
@@ -61,9 +61,9 @@ private:
 	std::condition_variable logCond;
 
 
-	std::vector<std::string> simulationLogs;
-	std::vector<std::string> guiLogs;
-	std::vector<std::string> viewerLogs;
+	std::queue<std::string> simulationLogs;
+	std::queue<std::string> guiLogs;
+	std::queue<std::string> viewerLogs;
 
 	std::mutex simulationLogMutex;
 	std::mutex guiLogMutex;
