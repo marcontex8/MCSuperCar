@@ -50,15 +50,18 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 		if (controller->isStopRequired()) {
 			controller->setStop(true);
 			std::cout << "SIMULATION | stop required, break" << std::endl;
+			diagnostics.monitor("status", "STOP REQUIRED");
 			break;
 		}
 		if (controller->isPauseRequired()) {
 			controller->setPause(true);
 			std::cout << "SIMULATION | pause required, waiting 100ms" << std::endl;
+			diagnostics.monitor("status", "PAUSE REQUIRED");
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
 		diagnostics.log("SIMULATION | simulation running", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+		diagnostics.monitor("status", "RUNNING");
 		std::cout << "SIMULATION | simulation running." << std::endl;
 		auto start = std::chrono::high_resolution_clock::now();
 		world->applyToElements(simulatePhysic);

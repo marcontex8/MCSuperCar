@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>888</width>
-    <height>997</height>
+    <width>944</width>
+    <height>901</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,11 +16,17 @@
   <widget class="QLabel" name="l_gui_logs">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>10</y>
-     <width>81</width>
-     <height>16</height>
+     <width>121</width>
+     <height>21</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>GUI logs</string>
@@ -30,10 +36,16 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>240</y>
-     <width>81</width>
-     <height>16</height>
+     <y>300</y>
+     <width>131</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Simulation logs</string>
@@ -43,65 +55,80 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>470</y>
+     <y>610</y>
      <width>81</width>
-     <height>16</height>
+     <height>21</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>Viewer logs</string>
    </property>
   </widget>
+  <widget class="QTextEdit" name="te_monitor">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>40</y>
+     <width>301</width>
+     <height>851</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>670</x>
-     <y>60</y>
-     <width>71</width>
-     <height>21</height>
+     <x>650</x>
+     <y>10</y>
+     <width>211</width>
+     <height>20</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
-    <string>Last cycle time:</string>
+    <string>STATUS MONITOR</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <widget class="QLCDNumber" name="lcdNumber">
+  <widget class="QTextEdit" name="te_gui_logs">
    <property name="geometry">
     <rect>
-     <x>750</x>
-     <y>60</y>
-     <width>64</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="lw_GUI_logs">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
+     <x>10</x>
      <y>40</y>
-     <width>571</width>
-     <height>192</height>
+     <width>601</width>
+     <height>251</height>
     </rect>
    </property>
   </widget>
-  <widget class="QListWidget" name="lw_simulation_logs">
+  <widget class="QTextEdit" name="te_simulation_logs">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>270</y>
-     <width>571</width>
-     <height>192</height>
+     <x>10</x>
+     <y>340</y>
+     <width>601</width>
+     <height>251</height>
     </rect>
    </property>
   </widget>
-  <widget class="QListWidget" name="lw_viewer_logs">
+  <widget class="QTextEdit" name="te_viewer_logs">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>500</y>
-     <width>571</width>
-     <height>192</height>
+     <x>10</x>
+     <y>640</y>
+     <width>601</width>
+     <height>251</height>
     </rect>
    </property>
   </widget>

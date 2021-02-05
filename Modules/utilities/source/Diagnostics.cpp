@@ -11,17 +11,33 @@ Diagnostics::Diagnostics() : initial_time( std::chrono::steady_clock::now() )
 	// create the thread which process logged messages
 	std::thread loggerThread = std::thread(
 		[this]() {
-			std::cout << "Diagnostics thread started." << std::endl;
+			std::cout << "Diagnostics Log thread started." << std::endl;
 			std::promise<bool> thread_terminate;
-			thread_terminated = thread_terminate.get_future(); //in order to check thread termination
+			log_thread_terminated = thread_terminate.get_future(); //in order to check thread termination
 
-			processMessages();
-			//this is executed after processMessages terminates (because the termination flag was set).
+			processLogMessages();
+			//this is executed after processLogMessages terminates (because the termination flag was set).
 			thread_terminate.set_value(true);
-			std::cout << "Diagnostics thread terminating." << std::endl;
+			std::cout << "Diagnostics Log thread terminating." << std::endl;
 		}
 	);
 	loggerThread.detach();
+
+
+	// create the thread which process monitor messages
+	std::thread monitorThread = std::thread(
+		[this]() {
+			std::cout << "Diagnostics Monitor thread started." << std::endl;
+			std::promise<bool> thread_terminate;
+			monitor_thread_terminated = thread_terminate.get_future(); //in order to check thread termination
+
+			processMonitorMessage();
+			//this is executed after processLogMessages terminates (because the termination flag was set).
+			thread_terminate.set_value(true);
+			std::cout << "Diagnostics Monitor thread terminating." << std::endl;
+		}
+	);
+	monitorThread.detach();
 }
 
 Diagnostics::~Diagnostics()
@@ -31,13 +47,17 @@ Diagnostics::~Diagnostics()
 	//signal to the bakcground task to terminate and wait for them.
 	terminate_flag = true;
 	try {
-		thread_terminated.wait();
-		if (thread_terminated.get()) {
-			std::cout << "Diagnostics thread termiated correctly." << std::endl;
+		log_thread_terminated.wait();
+		if (log_thread_terminated.get()) {
+			std::cout << "Diagnostics Log thread termiated correctly." << std::endl;
+		}
+		monitor_thread_terminated.wait();
+		if (monitor_thread_terminated.get()) {
+			std::cout << "Diagnostics Monitor thread termiated correctly." << std::endl;
 		}
 	}
 	catch (std::future_error e) {
-		std::cout << "Diagnostics thread termination incorrect." << std::endl;
+		std::cout << "Diagnostics threads termination incorrect." << std::endl;
 
 	}
 	closeFileStream();
@@ -91,14 +111,25 @@ void Diagnostics::log(std::string logMessage, Topic topic, Verbosity verbosity) 
 	logCond.notify_one();
 }
 
-void Diagnostics::processMessages() {
+
+
+void Diagnostics::monitor(std::string key, std::string value) {
+	std::chrono::steady_clock::duration time = std::chrono::steady_clock::now() - initial_time;
+	MonitorElementValue newElement(time, value);
+	{
+		std::lock_guard<std::mutex> lk(monitorInputMutex);
+		monitorInputQueue.push(MonitorElement(key, newElement));
+	}
+	monitorInputCond.notify_one();
+}
+
+
+void Diagnostics::processLogMessages() {
 	while (true) {
 		std::unique_lock<std::mutex> lk(logMutex);
 		using namespace std::chrono_literals;
 		logCond.wait_for(lk, 100ms,
 			[this]() {
-				//std::cout << "!logQueue.empty() = " << !logQueue.empty() << std::endl;
-				//std::cout << "terminate_flag = " << terminate_flag << std::endl;
 				return terminate_flag || !logQueue.empty();
 			}
 		);
@@ -109,56 +140,96 @@ void Diagnostics::processMessages() {
 			LoggedElement newLog = logQueue.front();
 			logQueue.pop();
 			lk.unlock();
+			addToLogQueue(newLog);
 			writeToFile(newLog);
-			addToVector(newLog);
 		}
 	}
 }
 
-void Diagnostics::addToVector(LoggedElement log) {
-	auto [time, topic, verbosity, message] = log;
-	std::string formattedTime = Diagnostics::logger_time_to_string(time);
-	std::string stringLog = formattedTime + "-" + verbosity_toString(verbosity) + " - " + message;
-	if (topic == Diagnostics::Topic::Simulation) {
-		std::lock_guard<std::mutex> lkSim(simulationLogMutex);
-		simulationLogs.push(stringLog);
-	}
-	else if (topic == Diagnostics::Topic::Gui) {
-		std::lock_guard<std::mutex> lkGui(guiLogMutex);
-		guiLogs.push(stringLog);
-	} 
-	else if (topic == Diagnostics::Topic::Viewer) {
-		std::lock_guard<std::mutex> lkViewer(viewerLogMutex);
-		viewerLogs.push(stringLog);
+void Diagnostics::processMonitorMessage() {
+	while (true) {
+		std::unique_lock<std::mutex> lk(monitorInputMutex);
+		using namespace std::chrono_literals;
+		monitorInputCond.wait_for(lk, 100ms,
+			[this]() {
+				return terminate_flag || !monitorInputQueue.empty();
+			}
+		);
+		if (terminate_flag) {
+			break;	// break the loop in case of termiation request
+		}
+		if (!monitorInputQueue.empty()) {
+			MonitorElement newLog = monitorInputQueue.front();
+			monitorInputQueue.pop();
+			lk.unlock();
+			auto& [key, value] = newLog;
+			addToMonitorMap(key, value);
+		}
 	}
 }
 
-std::string Diagnostics::readFromQueue(Topic topic) {
+void Diagnostics::addToMonitorMap(std::string key, MonitorElementValue value) {
+	std::lock_guard<std::mutex> lk(monitorOutputMutex);
+	monitorOutput.insert_or_assign(key, value);
+}
+
+
+void Diagnostics::addToLogQueue(LoggedElement element) {
+	auto [time, topic, verbosity, message] = element;
+	if (topic == Topic::Simulation) {
+		std::lock_guard<std::mutex> lk(simulationLogMutex);
+		simulationLogQueue.push(element);
+	}
+	else if (topic == Topic::Gui) {
+		std::lock_guard<std::mutex> lk(guiLogMutex);
+		guiLogQueue.push(element);
+	}
+	else if (topic == Topic::Viewer) {
+		std::lock_guard<std::mutex> lk(viewerLogMutex);
+		viewerLogQueue.push(element);
+	}
+}
+
+std::string Diagnostics::getMonitorString() {
+	std::string out;
+	std::lock_guard<std::mutex> lk(monitorOutputMutex);
+	for (const auto& element : monitorOutput) {
+		auto [key, pair] = element;
+		auto [time, value] = pair;
+		out += key + "	" + value + "	" + logger_time_to_string(time) + "\n";
+	}
+	return out;
+}
+
+std::string Diagnostics::getLogString(Topic topic) {
 	std::string tmp = "";
-	if (topic == Diagnostics::Topic::Simulation) {
-		std::lock_guard<std::mutex> lkSim(simulationLogMutex);
-		if (!simulationLogs.empty()) {
-			tmp = simulationLogs.front();
-			simulationLogs.pop();
+	if (topic == Topic::Simulation) {
+		std::lock_guard<std::mutex> lk(simulationLogMutex);
+		while (!simulationLogQueue.empty()) {
+			auto [time, topic, verbosity, message] = simulationLogQueue.front();
+			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
+			simulationLogQueue.pop();
 		}
 	}
-	else if (topic == Diagnostics::Topic::Gui) {
-		std::lock_guard<std::mutex> lkGui(guiLogMutex);
-		if (!guiLogs.empty()) {
-			tmp = guiLogs.front();
-			guiLogs.pop();
+	else if (topic == Topic::Gui) {
+		std::lock_guard<std::mutex> lk(guiLogMutex);
+		while (!guiLogQueue.empty()) {
+			auto [time, topic, verbosity, message] = guiLogQueue.front();
+			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
+			guiLogQueue.pop();
 		}
 	}
-	else if (topic == Diagnostics::Topic::Viewer) {
-		std::lock_guard<std::mutex> lkViewer(viewerLogMutex);
-		if (!viewerLogs.empty()) {
-			tmp = viewerLogs.front();
-			viewerLogs.pop();
-
+	else if (topic == Topic::Viewer) {
+		std::lock_guard<std::mutex> lk(viewerLogMutex);
+		while (!viewerLogQueue.empty()) {
+			auto [time, topic, verbosity, message] = viewerLogQueue.front();
+			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
+			viewerLogQueue.pop();
 		}
 	}
 	return tmp;
 }
+
 
 
 void Diagnostics::writeToFile(LoggedElement log) {
@@ -203,7 +274,7 @@ std::string Diagnostics::verbosity_toString(Verbosity verbosity) {
 	}
 }
 
-std::string Diagnostics::logger_time_to_string(logger_time_duration time) {
+std::string Diagnostics::logger_time_to_string(diagnostics_time time) {
 	/*
 	* USE THIS TO OBTAIN format m:s:ms:us:ns
 	* 

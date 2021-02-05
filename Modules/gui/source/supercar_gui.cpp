@@ -1,16 +1,21 @@
 #include "supercar_gui.h"
 #include "./ui_supercar_gui.h"
 
+#include "Diagnostics.h"
+
 #include <iostream>
+
+extern Diagnostics diagnostics;
+
 
 SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* manager, QWidget* parent) :
     manager(manager),
     QMainWindow(parent),
     ui(new Ui::SuperCarMain_GUI)
 {
+    diagnostics.log("SuperCarMain_GUI constructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     ui->setupUi(this);
-
-
+    
     ui->begin->setEnabled(true);
     ui->end->setEnabled(false);
     ui->play->setEnabled(false);
@@ -39,11 +44,14 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* manager, QWidg
 
 SuperCarMain_GUI::~SuperCarMain_GUI()
 {
+    diagnostics.log("SuperCarMain_GUI destructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     delete ui;
 }
 
 
 void SuperCarMain_GUI::simulationBegin() {
+    diagnostics.log("call to simulationBegin()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+
     this->manager->beginSimulation();
 
     ui->begin->setEnabled(false);
@@ -56,6 +64,8 @@ void SuperCarMain_GUI::simulationBegin() {
 }
 
 void SuperCarMain_GUI::simulationEnd() {
+    diagnostics.log("Call to simulationEnd()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+
     this->manager->endSimulation();
 
     ui->begin->setEnabled(true);
@@ -68,6 +78,8 @@ void SuperCarMain_GUI::simulationEnd() {
 }
 
 void SuperCarMain_GUI::simulationPlay() {
+    diagnostics.log("Call to simulationPlay()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+
     this->manager->playSimulation();
     
     ui->play->setEnabled(false);
@@ -75,6 +87,8 @@ void SuperCarMain_GUI::simulationPlay() {
 }
 
 void SuperCarMain_GUI::simulationPause() {
+    diagnostics.log("Call to simulationPause()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+
     this->manager->pauseSimulation();
 
     ui->play->setEnabled(true);
@@ -82,13 +96,13 @@ void SuperCarMain_GUI::simulationPause() {
 }
 
 void SuperCarMain_GUI::simulationAddElement() {
+    diagnostics.log("Call to simulationAddElement()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     static int id = 0;
     std::string name("elemento");
     Eigen::Vector3d position(0,0,0);
     Eigen::Quaterniond orientation;
     double mass = 10.0;
     this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
-    std::cout << "New Element Added." << std::endl;
     QString result = "New Element Added";
     emit elementsListModel->layoutChanged();
         //editCompleted(result);
@@ -97,8 +111,9 @@ void SuperCarMain_GUI::simulationAddElement() {
 
 
 void SuperCarMain_GUI::simulationCycleTimeChanged(int newTime) {
+    diagnostics.log("Call to simulationCycleTimeChanged()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     if (newTime > 0 && newTime < 1000) {
         this->manager->simulationController.setSimulationIntervalMillis(newTime);
-        std::cout << "Simulation Cycle Time Changed to " << newTime << std::endl;
+        diagnostics.monitor("Simulation Interval", std::to_string(newTime));
     }
 }

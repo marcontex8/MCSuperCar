@@ -8,52 +8,38 @@ DiagnosticsWindow::DiagnosticsWindow(Diagnostics* diagnostics, QWidget* parent) 
     diagnostics(diagnostics)
 {
     ui->setupUi(this);
-    /*
-    guiLogsListModel = new LogsListModel(diagnostics, Diagnostics::Topic::Gui);
-    ui->lv_GUI_logs->setModel(guiLogsListModel);
-    simulatorLogsListModel = new LogsListModel(diagnostics, Diagnostics::Topic::Simulation);
-    ui->lv_simulation_logs->setModel(simulatorLogsListModel);
-    viewerLogsListModel = new LogsListModel(diagnostics, Diagnostics::Topic::Viewer);
-    ui->lv_viewer_logs->setModel(viewerLogsListModel);
-    */
     QTimer* timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, QOverload<>::of(&DiagnosticsWindow::updateLogs));
-    timer->start(1000);
+    timer->start(20);
 }
 
 DiagnosticsWindow::~DiagnosticsWindow()
 {
     delete ui;
-    //delete guiLogsListModel;
-    //delete simulatorLogsListModel;
-    //delete viewerLogsListModel;
 }
 
 void DiagnosticsWindow::updateLogs() {
-    std::string lastSimulationLog = diagnostics->readFromQueue(Diagnostics::Topic::Simulation);
-    while (lastSimulationLog != "")
-    {
-        ui->lw_simulation_logs->addItem(QString::fromStdString(lastSimulationLog));
-        lastSimulationLog = diagnostics->readFromQueue(Diagnostics::Topic::Simulation);
+    std::string lastGUILog = diagnostics->getLogString(Diagnostics::Topic::Gui);
+    if (lastGUILog != "") {
+        ui->te_gui_logs->append(QString::fromStdString(lastGUILog));
+        ui->te_gui_logs->ensureCursorVisible();
     }
-    ui->lw_simulation_logs->scrollToBottom();
 
-    std::string lastGUILog = diagnostics->readFromQueue(Diagnostics::Topic::Gui);
-    while (lastGUILog != "")
-    {
-        ui->lw_GUI_logs->addItem(QString::fromStdString(lastGUILog));
-        lastGUILog = diagnostics->readFromQueue(Diagnostics::Topic::Gui);
+    std::string lastSimulationLog = diagnostics->getLogString(Diagnostics::Topic::Simulation);
+    if (lastSimulationLog != "") {
+        ui->te_simulation_logs->append(QString::fromStdString(lastSimulationLog));
+        ui->te_simulation_logs->ensureCursorVisible();
     }
-    ui->lw_GUI_logs->scrollToBottom();
 
-    std::string lastViewerLog = diagnostics->readFromQueue(Diagnostics::Topic::Viewer);
-    while (lastViewerLog != "")
-    {
-        ui->lw_viewer_logs->addItem(QString::fromStdString(lastViewerLog));
-        lastViewerLog = diagnostics->readFromQueue(Diagnostics::Topic::Viewer);
+    std::string lastViewerLog = diagnostics->getLogString(Diagnostics::Topic::Viewer);
+    if (lastViewerLog != "") {
+        ui->te_viewer_logs->append(QString::fromStdString(lastViewerLog));
+        ui->te_viewer_logs->ensureCursorVisible();
     }
-    ui->lw_viewer_logs->scrollToBottom();
 
+    std::string monitor = diagnostics->getMonitorString();
+    ui->te_monitor->setText(QString::fromStdString(monitor));
+    ui->te_monitor->ensureCursorVisible();
 }
 
 
