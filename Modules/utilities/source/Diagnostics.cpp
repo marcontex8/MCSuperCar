@@ -175,7 +175,7 @@ void Diagnostics::addToMonitorMap(std::string key, MonitorElementValue value) {
 
 
 void Diagnostics::addToLogQueue(LoggedElement element) {
-	auto [time, topic, verbosity, message] = element;
+	auto &[time, topic, verbosity, message] = element;
 	if (topic == Topic::Simulation) {
 		std::lock_guard<std::mutex> lk(simulationLogMutex);
 		simulationLogQueue.push(element);
@@ -194,8 +194,8 @@ std::string Diagnostics::getMonitorString() {
 	std::string out;
 	std::lock_guard<std::mutex> lk(monitorOutputMutex);
 	for (const auto& element : monitorOutput) {
-		auto [key, pair] = element;
-		auto [time, value] = pair;
+		auto &[key, pair] = element;
+		auto &[time, value] = pair;
 		out += key + "	" + value + "	" + logger_time_to_string(time) + "\n";
 	}
 	return out;
@@ -206,7 +206,7 @@ std::string Diagnostics::getLogString(Topic topic) {
 	if (topic == Topic::Simulation) {
 		std::lock_guard<std::mutex> lk(simulationLogMutex);
 		while (!simulationLogQueue.empty()) {
-			auto [time, topic, verbosity, message] = simulationLogQueue.front();
+			auto &[time, topic, verbosity, message] = simulationLogQueue.front();
 			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
 			simulationLogQueue.pop();
 		}
@@ -214,7 +214,7 @@ std::string Diagnostics::getLogString(Topic topic) {
 	else if (topic == Topic::Gui) {
 		std::lock_guard<std::mutex> lk(guiLogMutex);
 		while (!guiLogQueue.empty()) {
-			auto [time, topic, verbosity, message] = guiLogQueue.front();
+			auto &[time, topic, verbosity, message] = guiLogQueue.front();
 			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
 			guiLogQueue.pop();
 		}
@@ -222,7 +222,7 @@ std::string Diagnostics::getLogString(Topic topic) {
 	else if (topic == Topic::Viewer) {
 		std::lock_guard<std::mutex> lk(viewerLogMutex);
 		while (!viewerLogQueue.empty()) {
-			auto [time, topic, verbosity, message] = viewerLogQueue.front();
+			auto &[time, topic, verbosity, message] = viewerLogQueue.front();
 			tmp += logger_time_to_string(time) + "	| " + verbosity_toString(verbosity) + "	| " + message + "\n";
 			viewerLogQueue.pop();
 		}
@@ -233,7 +233,7 @@ std::string Diagnostics::getLogString(Topic topic) {
 
 
 void Diagnostics::writeToFile(LoggedElement log) {
-	auto [time, topic, verbosity, message] = log;
+	auto &[time, topic, verbosity, message] = log;
 	using namespace std::chrono_literals;
 	static std::chrono::nanoseconds lastTime = 0us;
 	auto elapsed_nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(time);
