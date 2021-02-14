@@ -3,57 +3,11 @@
 #include "stb_image.h"
 
 
-unsigned int Shaders::compileShader(const char* shaderCode, GLenum type) {
-	unsigned int shader = glCreateShader(type);
-	glShaderSource(shader, 1, &shaderCode, NULL);
-	glCompileShader(shader);
-	// check for shader compile errors
-	int success;
-	char infoLog[512];
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-		return 0;
-	}
-	return shader;
-};
 
-unsigned int Shaders::buildShaderProgram(const char* vertexShaderCode, const char* fragmentShaderCode) {
-	unsigned int vertexShader = 0;
-	unsigned int fragmentShader = 0;
+#include "Diagnostics.h"
 
-	vertexShader = compileShader(vertexShaderCode, GL_VERTEX_SHADER);
-	if (vertexShader == 0) {
-		std::cout << "Errore nella compiazione del vertex shader" << std::endl;
-		return 0;
-	}
+extern Diagnostics diagnostics;
 
-	fragmentShader = compileShader(fragmentShaderCode, GL_FRAGMENT_SHADER);
-	if (fragmentShader == 0) {
-		std::cout << "Errore nella compiazione del fragment shader" << std::endl;
-		return 0;
-	}
-
-	// link shaders
-	int success = 0;
-	char infoLog[512];
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	// check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-		return 0;
-	}
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-	return shaderProgram;
-};
 
 unsigned int Textures::generateTexture(const char* texturePath) {
 	unsigned int texture = 0;
@@ -106,7 +60,7 @@ void Vertices::setUpVertices(float* verticesArray, size_t size, unsigned int& VB
 }
 
 void DrawersFactory::setupBox() {
-	box_shaderProgram = Shaders::buildShaderProgram(shaders.simpleVSCode, shaders.simpleFSCode);
+	box_shaderProgram = shaders.getBoxShader();
 	box_texture = Textures::generateTexture(textures.boxTexturePath);
 	Vertices::setUpVertices(vertices.cubeTexturedVertices, vertices.cubeTexturedSize, box_VBO, box_VAO);
 	box_modelLoc = glGetUniformLocation(box_shaderProgram, "model");
@@ -120,6 +74,9 @@ BoxDrawer* DrawersFactory::newBoxDrawer() {
 
 DrawersFactory::DrawersFactory() {
 	setupBox();
+	
+
+	
 }
 
 DrawersFactory::~DrawersFactory() {

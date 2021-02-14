@@ -196,7 +196,7 @@ std::string Diagnostics::getMonitorString() {
 	for (const auto& element : monitorOutput) {
 		auto &[key, pair] = element;
 		auto &[time, value] = pair;
-		out += key + "	" + value + "	" + logger_time_to_string(time) + "\n";
+		out += key + "\t" + value + "\t" + logger_time_to_string(time) + "\n";
 	}
 	return out;
 }

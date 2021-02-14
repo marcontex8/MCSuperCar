@@ -43,26 +43,23 @@ void SimulationManager::pauseSimulation() {
 };
 
 void SimulationManager::simulate(SimulatedWorld* world, SimulationController* controller){
-	diagnostics.log("SIMULATION | beginning simulate function", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-	std::cout << "SIMULATION | beginning simulate function" << std::endl;
+	diagnostics.log("beginning simulate function", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+	int loopCounter = 0;
 	while(true){
-		diagnostics.log("new simulation loop");
+		loopCounter++;
+		diagnostics.monitor("SIMULATION LOOP", std::to_string(loopCounter));
 		if (controller->isStopRequired()) {
 			controller->setStop(true);
-			std::cout << "SIMULATION | stop required, break" << std::endl;
-			diagnostics.monitor("status", "STOP REQUIRED");
+			diagnostics.monitor("status", "\tSTOP REQUIRED");
 			break;
 		}
 		if (controller->isPauseRequired()) {
 			controller->setPause(true);
-			std::cout << "SIMULATION | pause required, waiting 100ms" << std::endl;
-			diagnostics.monitor("status", "PAUSE REQUIRED");
+			diagnostics.monitor("status", "\tPAUSE REQUIRED");
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			continue;
 		}
-		diagnostics.log("SIMULATION | simulation running", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-		diagnostics.monitor("status", "RUNNING");
-		std::cout << "SIMULATION | simulation running." << std::endl;
+		diagnostics.monitor("status", "\tRUNNING");
 		auto start = std::chrono::high_resolution_clock::now();
 		world->applyToElements(simulatePhysic);
 
@@ -76,6 +73,8 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 		}
 		if (number_of_overrunned_cycles > 3) {
 			std::cerr << "ERROR: program over-runned for 3 cycles" << std::endl;
+			diagnostics.log("ERROR: program over-runned for 3 cycles", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Error);
+
 			return;
 		}
 		std::this_thread::sleep_for(delay);

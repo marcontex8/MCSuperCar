@@ -10,3 +10,6 @@
 [submodule "External/eigen"]
 	path = External/eigen
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "External/assimp"]
+	path = External/assimp
+	url = https://github.com/assimp/assimp.git

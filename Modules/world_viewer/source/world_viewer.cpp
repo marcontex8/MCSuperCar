@@ -7,7 +7,7 @@
 
 
 // Used to correctly include STB image library
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 // GLM
@@ -17,8 +17,11 @@
 
 #include<map>
 
-#include <DrawersFactory.h>
+#include "DrawersFactory.h"
+#include "AssimpFactory.h"
 #include "Diagnostics.h"
+
+#include <chrono>
 
 extern Diagnostics diagnostics;
 
@@ -35,7 +38,7 @@ WorldViewer::~WorldViewer(){
 void WorldViewer::runView() {
     std::cout << "WorldViewer | operator()" << std::endl;
     diagnostics.log("WorldViewer | operator()", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-
+    using namespace std::chrono_literals;
     setupWindow();
     //getOpenGLInfo();
 
@@ -52,57 +55,51 @@ void WorldViewer::runView() {
 
 
     DrawersFactory drawersFactory;
+    AssimpFactory assimpFactory;
 
     std::vector<ElementDrawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window) && !(*terminationFlag))
     {
+        std::this_thread::sleep_for(10ms);
+
         static int i = 0;
-        //std::cout << "running loop " << i++ << std::endl;
-        diagnostics.log("running loop "+std::to_string( i++), Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+        diagnostics.monitor("VIEWER LOOP \t", std::to_string( i++));
 
         processInput();
         // refresh background
         glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // define object position
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-
-        glm::vec3 color(1.0f, 1.0f, 1.0f);
-
         world->applyToElements(
-            [&drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
+            [&assimpFactory, &drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
-                    std::cout << "this element is nullptr" << std::endl;
+                    diagnostics.log("This element is nullptr", Diagnostics::Topic::Viewer);
                     return;
                 }
-                std::cout << "elementsDrawer.size() = " << elementsDrawer.size() << std::endl;
-                std::cout << "element->id = " << element->id << std::endl;
-
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
+                    //currentElement = assimpFactory.getNewSimpleCarDrawer();
                     currentElement = drawersFactory.newBoxDrawer();
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
-                    std::cout << "added new element to elementsDrawer" << std::endl;
+                    diagnostics.log("Added new element to elementsDrawer",Diagnostics::Topic::Viewer);
                 }
                 else
                 {
                     currentElement = elementsDrawer[element->id];
                     if (currentElement == nullptr) {
-                        std::cout << "Questo non dovrebbe succedere" << std::endl;
+                        diagnostics.log("This shoud not happen!!", Diagnostics::Topic::Viewer,Diagnostics::Verbosity::Error);
                         return;
                     }
                 }
                 // define object position
                 glm::mat4 model = glm::mat4(1.0f);
                 model = glm::translate(model, glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]));
-                std::cout << "x: " << element->getPosition()[0]
+                /*std::cout << "x: " << element->getPosition()[0]
                     << "y: " << element->getPosition()[1]
                     << "z: " << element->getPosition()[2]
                     << std::endl;
-
+                */
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+                model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 
                 currentElement->draw(model, view, projection);
                 

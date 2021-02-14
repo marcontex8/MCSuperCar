@@ -50,8 +50,6 @@ void DiagnosticsWindow::updateLogs() {
     }
 
     std::string monitor = diagnostics->getMonitorString();
-
-    std::cout << "monitor: " << monitor << std::endl;
     ui->te_monitor->setText(QString::fromStdString(monitor));
     ui->te_monitor->ensureCursorVisible();
 }

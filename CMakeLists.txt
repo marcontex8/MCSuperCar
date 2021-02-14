@@ -5,14 +5,10 @@ project (MCSuperCar VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 
 find_package(Threads	REQUIRED)
 find_package(OpenGL		REQUIRED)
-
-
-
-
-
 # DEFINE PROJECT DIRECTORIES VARIABLES
 
 # Define Project Directories
@@ -22,8 +18,6 @@ message(STATUS "MCSC | modules dir: ${MCSC_MODULES_DIR}")
 #Define External Directory
 set(MCSC_EXTERNAL_DIR "${PROJECT_SOURCE_DIR}/External")
 message(STATUS "MCSC | external dir: ${MCSC_EXTERNAL_DIR}")
-
-
 
 
 
@@ -46,6 +40,9 @@ include_directories("${MCSC_EXTERNAL_DIR}/glm")
 # eigen
 include_directories("${MCSC_EXTERNAL_DIR}/eigen")
 
+
+add_subdirectory("${MCSC_EXTERNAL_DIR}/assimp")
+#find_package(assimp   REQUIRED)
 
 
 # ADD MODULES DIRECTORIES
