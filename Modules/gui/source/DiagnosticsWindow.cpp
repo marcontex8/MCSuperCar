@@ -21,7 +21,6 @@ DiagnosticsWindow::~DiagnosticsWindow()
 void DiagnosticsWindow::updateLogs() {
     std::string lastGUILog = diagnostics->getLogString(Diagnostics::Topic::Gui);
     if (lastGUILog != "") {
-        std::cout << "New log GUI: " << lastGUILog << std::endl;
         ui->te_gui_logs->append(QString::fromStdString(lastGUILog));
         if (ui->cb_autoscroll_GUI->isChecked()) {
             ui->te_gui_logs->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
@@ -31,7 +30,6 @@ void DiagnosticsWindow::updateLogs() {
 
     std::string lastSimulationLog = diagnostics->getLogString(Diagnostics::Topic::Simulation);
     if (lastSimulationLog != "") {
-        std::cout << "New log Simulation: " << lastSimulationLog << std::endl;
         ui->te_simulation_logs->append(QString::fromStdString(lastSimulationLog));
         if (ui->cb_autoscroll_simulation->isChecked()) {
             ui->te_simulation_logs->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
@@ -41,7 +39,6 @@ void DiagnosticsWindow::updateLogs() {
 
     std::string lastViewerLog = diagnostics->getLogString(Diagnostics::Topic::Viewer);
     if (lastViewerLog != "") {
-        std::cout << "New log Viewer: " << lastViewerLog << std::endl;
         ui->te_viewer_logs->append(QString::fromStdString(lastViewerLog));
         if (ui->cb_autoscroll_viewer->isChecked()) {
             ui->te_viewer_logs->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);

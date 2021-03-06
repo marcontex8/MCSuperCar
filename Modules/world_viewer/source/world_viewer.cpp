@@ -44,6 +44,10 @@ void WorldViewer::runView() {
 
 
     glEnable(GL_DEPTH_TEST);
+
+    // Enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     // define camera position
     glm::mat4 view = glm::mat4(1.0f);
@@ -57,6 +61,7 @@ void WorldViewer::runView() {
     DrawersFactory drawersFactory;
     AssimpFactory assimpFactory;
 
+    SimpleScenarioDrawer* scenario = drawersFactory.newSimpleScenarioDrawer();
     std::vector<ElementDrawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window) && !(*terminationFlag))
     {
@@ -67,8 +72,14 @@ void WorldViewer::runView() {
 
         processInput();
         // refresh background
-        glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
+        //glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+        //scenario->draw(model, view, projection);
+
         world->applyToElements(
             [&assimpFactory, &drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
                 if (element == nullptr) {
@@ -77,8 +88,8 @@ void WorldViewer::runView() {
                 }
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    //currentElement = assimpFactory.getNewSimpleCarDrawer();
-                    currentElement = drawersFactory.newBoxDrawer();
+                    currentElement = assimpFactory.getNewSimpleCarDrawer();
+                    //currentElement = drawersFactory.newBoxDrawer();
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     diagnostics.log("Added new element to elementsDrawer",Diagnostics::Topic::Viewer);
                 }
@@ -99,7 +110,7 @@ void WorldViewer::runView() {
                     << std::endl;
                 */
                 model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-                model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+                model = glm::scale(model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
 
                 currentElement->draw(model, view, projection);
                 

@@ -14,10 +14,12 @@ struct Vertex {
 	// position
 	glm::vec3 Position;
 	// normal
-	/*
+	
 	glm::vec3 Normal;
+	
 	// texCoords
 	glm::vec2 TexCoords;
+	/*
 	// tangent
 	glm::vec3 Tangent;
 	// bitangent
@@ -30,7 +32,7 @@ struct Vertex {
 
 class AssimpFactory {
 private:
-	const std::string simpleCarPath = R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\SimpleCar.obj)";
+	const std::string simpleCarPath = R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Meshes FBX\Hatchback.FBX)";
 	
 	Assimp::Importer importer;
 	Shaders shaders;
@@ -41,6 +43,8 @@ private:
 	void processNode(aiNode* node, const aiScene* scene);
 	CarElement processMesh(aiMesh* mesh, const aiScene* scene, CarElement& element);
 
+	static unsigned int loadTexture(std::string const& path);
+	void AssimpFactory::processMaterial(aiMaterial* material, CarElement& element);
 	void setupSimpleCar();
 
 public:

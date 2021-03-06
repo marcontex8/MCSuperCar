@@ -63,6 +63,7 @@ void DrawersFactory::setupBox() {
 	box_shaderProgram = shaders.getBoxShader();
 	box_texture = Textures::generateTexture(textures.boxTexturePath);
 	Vertices::setUpVertices(vertices.cubeTexturedVertices, vertices.cubeTexturedSize, box_VBO, box_VAO);
+	glUseProgram(box_shaderProgram);
 	box_modelLoc = glGetUniformLocation(box_shaderProgram, "model");
 	box_viewLoc = glGetUniformLocation(box_shaderProgram, "view");
 	box_projectionLoc = glGetUniformLocation(box_shaderProgram, "projection");
@@ -72,9 +73,25 @@ BoxDrawer* DrawersFactory::newBoxDrawer() {
 	return new BoxDrawer(box_shaderProgram, box_texture, box_VAO, box_VBO, box_viewLoc, box_projectionLoc, box_modelLoc);
 }
 
+SimpleScenarioDrawer* DrawersFactory::newSimpleScenarioDrawer() {
+	return new SimpleScenarioDrawer(simpleScenario_shaderProgram, simpleScenario_texture, simpleScenario_VAO, simpleScenario_VBO, simpleScenario_viewLoc, simpleScenario_projectionLoc, simpleScenario_modelLoc);
+}
+
+
+void DrawersFactory::setupSimpleScenario() {
+	simpleScenario_shaderProgram = shaders.getSimpleScenarioShader();
+	simpleScenario_texture = Textures::generateTexture(textures.simpleScenarioTexturePath);
+	Vertices::setUpVertices(vertices.simpleScenarioVertices, vertices.simpleScenarioSize, simpleScenario_VBO, simpleScenario_VAO);
+	glUseProgram(simpleScenario_shaderProgram);
+	simpleScenario_modelLoc = glGetUniformLocation(simpleScenario_shaderProgram, "model");
+	simpleScenario_viewLoc = glGetUniformLocation(simpleScenario_shaderProgram, "view");
+	simpleScenario_projectionLoc = glGetUniformLocation(simpleScenario_shaderProgram, "projection");
+}
+
+
 DrawersFactory::DrawersFactory() {
 	setupBox();
-	
+	setupSimpleScenario();
 
 	
 }
@@ -84,4 +101,9 @@ DrawersFactory::~DrawersFactory() {
 	glDeleteTextures(1, &box_texture);
 	glDeleteVertexArrays(1, &box_VAO);
 	glDeleteBuffers(1, &box_VBO);
+
+	glDeleteProgram(simpleScenario_shaderProgram);
+	glDeleteTextures(1, &simpleScenario_texture);
+	glDeleteVertexArrays(1, &simpleScenario_VAO);
+	glDeleteBuffers(1, &simpleScenario_VBO);
 }
