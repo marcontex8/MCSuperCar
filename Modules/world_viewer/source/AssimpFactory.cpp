@@ -61,7 +61,7 @@ const aiScene* AssimpFactory::loadModel(std::string const& path)
 {
     diagnostics.log("loadModel Called", Diagnostics::Topic::Viewer);
     // read file via ASSIMP
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph);
     // check for errors
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
     {
@@ -97,7 +97,7 @@ void AssimpFactory::processMaterial(aiMaterial* material, CarElement& element) {
     if (name == "Glass") {
 
     }
-    if (name == "Wheel") {
+    if (name == "wheel") {
         element.texture_diffuse = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\wheel_B_Diffuse.png)");
         element.texture_specular = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\wheel_B_Glossiness.png)");
     }

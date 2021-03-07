@@ -73,7 +73,7 @@ void WorldViewer::runView() {
         processInput();
         // refresh background
         //glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -109,7 +109,7 @@ void WorldViewer::runView() {
                     << "z: " << element->getPosition()[2]
                     << std::endl;
                 */
-                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                 model = glm::scale(model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
 
                 currentElement->draw(model, view, projection);
