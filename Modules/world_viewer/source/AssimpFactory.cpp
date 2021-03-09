@@ -5,33 +5,31 @@
 
 extern Diagnostics diagnostics;
 
-
-
-void AssimpFactory::setupSimpleCar() {
-    diagnostics.log("setupSimpleCar", Diagnostics::Topic::Viewer);
-
-    const aiScene* carScene = loadModel(simpleCarPath);
-    if (carScene != nullptr) {
-        processNode(carScene->mRootNode, carScene);
-    }
-}
-
-
-
 AssimpFactory::AssimpFactory() {
-    setupSimpleCar();
 }
-
-
 
 AssimpFactory::~AssimpFactory() {
 
 }
 
+void AssimpFactory::setupSimpleCar(carPack001::Model model, carPack001::Color color) {
+    diagnostics.log("setting up SimpleCar", Diagnostics::Topic::Viewer);
+    currentPaths = getPaths(model, color);
+    const aiScene* carScene = loadModel(currentPaths.model);
+    if (carScene != nullptr) {
+        processNode(carScene->mRootNode, carScene);
+    }
+    customizations.insert(std::pair(std::tuple(model, color), carElements));
+}
 
 
-SimpleCarDrawer* AssimpFactory::getNewSimpleCarDrawer() {
-    return new SimpleCarDrawer(carElements);
+SimpleCarDrawer* AssimpFactory::getNewSimpleCarDrawer(carPack001::Model model, carPack001::Color color) {
+    auto customization = customizations.find(std::tuple(model, color));
+    if (customization == customizations.end())
+    {
+        setupSimpleCar(model, color);
+    }
+    return new SimpleCarDrawer(customizations[std::tuple(model, color)]);
 }
 
 
@@ -87,19 +85,19 @@ void AssimpFactory::processMaterial(aiMaterial* material, CarElement& element) {
     diagnostics.log("Material Name: " + name, Diagnostics::Topic::Viewer);
 
     if (name == "Body") {
-        element.texture_diffuse = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\HatchbackBlue.png)");
-        element.texture_specular = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\Hatchback_Glossiness.png)");
+        element.texture_diffuse = loadTexture(currentPaths.bodyDiffuseTexture);
+        element.texture_specular = loadTexture(currentPaths.bodyGlossinTexture);
 
     }
     if (name == "Optics") {
-        element.texture_diffuse = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Optics.jpg)");
+        element.texture_diffuse = loadTexture(currentPaths.opticsTexture);
     }
     if (name == "Glass") {
 
     }
-    if (name == "wheel") {
-        element.texture_diffuse = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\wheel_B_Diffuse.png)");
-        element.texture_specular = loadTexture(R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Textures\Hatchback\wheel_B_Glossiness.png)");
+    if (name == "Wheel") {
+        element.texture_diffuse = loadTexture(currentPaths.wheelDiffuseTexture);
+        element.texture_specular = loadTexture(currentPaths.wheelGlossinTexture);
     }
 
     for (int i = 0; i < material->mNumProperties; i++) {

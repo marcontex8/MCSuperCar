@@ -11,6 +11,7 @@ add_library(ViewerManager
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/AssimpFactory.cpp"
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/SimpleCarDrawer.cpp"
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/SimpleScenarioDrawer.cpp"
+	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/CarPack001_defs.cpp"
 
 )
 

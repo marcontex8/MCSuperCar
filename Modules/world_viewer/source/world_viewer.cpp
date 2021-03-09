@@ -73,7 +73,7 @@ void WorldViewer::runView() {
         processInput();
         // refresh background
         //glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -88,7 +88,7 @@ void WorldViewer::runView() {
                 }
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    currentElement = assimpFactory.getNewSimpleCarDrawer();
+                    currentElement = assimpFactory.getNewSimpleCarDrawer(carPack001::Model::Minivan, carPack001::Color::Green);
                     //currentElement = drawersFactory.newBoxDrawer();
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     diagnostics.log("Added new element to elementsDrawer",Diagnostics::Topic::Viewer);
@@ -109,8 +109,10 @@ void WorldViewer::runView() {
                     << "z: " << element->getPosition()[2]
                     << std::endl;
                 */
-                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-                model = glm::scale(model, glm::vec3(0.0001f, 0.0001f, 0.0001f));
+                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+                
+                //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                model = glm::scale(model, glm::vec3(0.0005f, 0.0005f, 0.0005f));
 
                 currentElement->draw(model, view, projection);
                 

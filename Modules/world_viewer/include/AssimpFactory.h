@@ -9,50 +9,38 @@
 
 #include "Shaders.h"
 #include "SimpleCarDrawer.h"
+#include "CarPack001_defs.h"
 
 struct Vertex {
-	// position
 	glm::vec3 Position;
-	// normal
-	
 	glm::vec3 Normal;
-	
-	// texCoords
 	glm::vec2 TexCoords;
-	/*
-	// tangent
-	glm::vec3 Tangent;
-	// bitangent
-	glm::vec3 Bitangent;
-	*/
 };
-
-
 
 
 class AssimpFactory {
 private:
-	const std::string simpleCarPath = R"(D:\WorkSpace\MCSuperCar\Modules\world_viewer\graphic\CarPack001\Meshes FBX\Hatchback.FBX)";
-	
+	//TODO: questa soluzione non mi piace, dovrei cambiarla
+	carPack001::Paths currentPaths;
+	std::vector<CarElement> carElements;
+
 	Assimp::Importer importer;
 	Shaders shaders;
 
-	std::vector<CarElement> carElements;
+	std::map<std::tuple<carPack001::Model, carPack001::Color>, std::vector<CarElement>> customizations;
 
 	const aiScene* loadModel(std::string const& path);
 	void processNode(aiNode* node, const aiScene* scene);
 	CarElement processMesh(aiMesh* mesh, const aiScene* scene, CarElement& element);
 
 	static unsigned int loadTexture(std::string const& path);
-	void AssimpFactory::processMaterial(aiMaterial* material, CarElement& element);
-	void setupSimpleCar();
+	void processMaterial(aiMaterial* material, CarElement& element);
+	void setupSimpleCar(carPack001::Model model, carPack001::Color color);
 
 public:
 	AssimpFactory();
 	~AssimpFactory();
-	SimpleCarDrawer* getNewSimpleCarDrawer();
-
-
+	SimpleCarDrawer* getNewSimpleCarDrawer(carPack001::Model model = carPack001::Model::Hatchback, carPack001::Color color = carPack001::Color::Blue);
 };
 
 
