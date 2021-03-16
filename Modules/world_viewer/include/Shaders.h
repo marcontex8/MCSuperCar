@@ -12,12 +12,12 @@ public:
 	~Shaders();
 
 	unsigned int getBoxShader();
-	unsigned int gerSimpleCarShader();
 	unsigned int getSimpleScenarioShader();
 	unsigned int getTextureCarShader();
 
 private:
-	std::once_flag flag1, flag2, flag3, flag4;
+	static std::once_flag compilationFlag;
+
 	static const char* simpleVSCode;
 	static const char* simpleFSCode;
 
@@ -34,9 +34,7 @@ private:
 	static unsigned int simpleScenarioShader;
 	static unsigned int textureCarShader;
 
-	static void buildBoxShader();
-	static void buildSimpleScenarioShader();
-	static void buildTextureCarShader();
+	static void buildAllShaders();
 
 	static unsigned int buildShaderProgram(const char* vertexShaderCode, const char* fragmentShaderCode);
 	static unsigned int compileShader(const char* shaderCode, GLenum type);

@@ -17,8 +17,8 @@ public:
 
 class Vertices {
 public:
-	size_t cubeTexturedSize = 5 * 6 * 6;
-	float cubeTexturedVertices[5 * 6 * 6] = {
+	static constexpr size_t cubeTexturedSize = 5 * 6 * 6;
+	static constexpr float cubeTexturedVertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -62,17 +62,20 @@ public:
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
 
-	size_t simpleScenarioSize = 5*6;
-	float simpleScenarioVertices[5*6] = {
-		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-		 1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+	static constexpr size_t simpleScenarioSize = 3*6;
+	static constexpr float simpleScenarioVertices[simpleScenarioSize] = {
+		-1.0f, -1.0f, 0.0f,
+		 1.0f, -1.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f, 0.0f,
+		-1.0f,  1.0f, 0.0f,
+		-1.0f, -1.0f, 0.0f
 	};
 
-	static void Vertices::setUpVertices(float* verticesArray, size_t size, unsigned int& VBO, unsigned int& VAO);
+	static void Vertices::setUpTexturedVertices(const float* verticesArray, const size_t size, unsigned int& VBO, unsigned int& VAO);
+
+	static void Vertices::setUpVertices(const float* verticesArray, const size_t size, unsigned int& VAO);
+
 };
 
 
@@ -90,7 +93,6 @@ private:
 	unsigned int box_projectionLoc = 0;
 
 	unsigned int simpleScenario_VAO = 0;
-	unsigned int simpleScenario_VBO = 0;
 	unsigned int simpleScenario_shaderProgram = 0;
 	unsigned int simpleScenario_texture = 0;
 	unsigned int simpleScenario_modelLoc = 0;

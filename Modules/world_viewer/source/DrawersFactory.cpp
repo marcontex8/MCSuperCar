@@ -35,7 +35,7 @@ unsigned int Textures::generateTexture(const char* texturePath) {
 	return texture;
 }
 
-void Vertices::setUpVertices(float* verticesArray, size_t size, unsigned int& VBO, unsigned int& VAO) {
+void Vertices::setUpTexturedVertices(const float* verticesArray, const size_t size, unsigned int& VBO, unsigned int& VAO) {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
@@ -59,10 +59,25 @@ void Vertices::setUpVertices(float* verticesArray, size_t size, unsigned int& VB
 	glBindVertexArray(0);
 }
 
+
+void Vertices::setUpVertices(const float* verticesArray, const size_t size, unsigned int& VAO) {
+	glGenVertexArrays(1, &VAO);
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(verticesArray), verticesArray, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+
 void DrawersFactory::setupBox() {
 	box_shaderProgram = shaders.getBoxShader();
 	box_texture = Textures::generateTexture(textures.boxTexturePath);
-	Vertices::setUpVertices(vertices.cubeTexturedVertices, vertices.cubeTexturedSize, box_VBO, box_VAO);
+	Vertices::setUpTexturedVertices(Vertices::cubeTexturedVertices, Vertices::cubeTexturedSize, box_VBO, box_VAO);
 	glUseProgram(box_shaderProgram);
 	box_modelLoc = glGetUniformLocation(box_shaderProgram, "model");
 	box_viewLoc = glGetUniformLocation(box_shaderProgram, "view");
@@ -74,14 +89,13 @@ BoxDrawer* DrawersFactory::newBoxDrawer() {
 }
 
 SimpleScenarioDrawer* DrawersFactory::newSimpleScenarioDrawer() {
-	return new SimpleScenarioDrawer(simpleScenario_shaderProgram, simpleScenario_texture, simpleScenario_VAO, simpleScenario_VBO, simpleScenario_viewLoc, simpleScenario_projectionLoc, simpleScenario_modelLoc);
+	return new SimpleScenarioDrawer(simpleScenario_shaderProgram, simpleScenario_texture, simpleScenario_VAO, simpleScenario_viewLoc, simpleScenario_projectionLoc, simpleScenario_modelLoc);
 }
 
 
 void DrawersFactory::setupSimpleScenario() {
 	simpleScenario_shaderProgram = shaders.getSimpleScenarioShader();
-	simpleScenario_texture = Textures::generateTexture(textures.simpleScenarioTexturePath);
-	Vertices::setUpVertices(vertices.simpleScenarioVertices, vertices.simpleScenarioSize, simpleScenario_VBO, simpleScenario_VAO);
+	Vertices::setUpVertices(Vertices::simpleScenarioVertices, Vertices::simpleScenarioSize, simpleScenario_VAO);
 	glUseProgram(simpleScenario_shaderProgram);
 	simpleScenario_modelLoc = glGetUniformLocation(simpleScenario_shaderProgram, "model");
 	simpleScenario_viewLoc = glGetUniformLocation(simpleScenario_shaderProgram, "view");
@@ -92,8 +106,6 @@ void DrawersFactory::setupSimpleScenario() {
 DrawersFactory::DrawersFactory() {
 	setupBox();
 	setupSimpleScenario();
-
-	
 }
 
 DrawersFactory::~DrawersFactory() {
@@ -105,5 +117,4 @@ DrawersFactory::~DrawersFactory() {
 	glDeleteProgram(simpleScenario_shaderProgram);
 	glDeleteTextures(1, &simpleScenario_texture);
 	glDeleteVertexArrays(1, &simpleScenario_VAO);
-	glDeleteBuffers(1, &simpleScenario_VBO);
 }

@@ -67,24 +67,24 @@ namespace carPack001{
 		Paths requiredPaths;
 		std::string texturesPath = carPack_path + "\\Textures\\" + modelsStrings[model] + "\\";
 		requiredPaths.model = carPack_path + "\\Meshes FBX\\" + modelsStrings[model] + ".FBX";
-		diagnostics.log("model: " + requiredPaths.model, Diagnostics::Topic::Simulation);
+		//diagnostics.log("model: " + requiredPaths.model, Diagnostics::Topic::Viewer);
 
 		requiredPaths.bodyDiffuseTexture = texturesPath +
 			modelsStrings[model] + colorsStrings[color] + ".png";
-		diagnostics.log("bodyDiffuseTexture: " + requiredPaths.bodyDiffuseTexture, Diagnostics::Topic::Simulation);
+		//diagnostics.log("bodyDiffuseTexture: " + requiredPaths.bodyDiffuseTexture, Diagnostics::Topic::Viewer);
 
 		requiredPaths.bodyGlossinTexture = texturesPath +
 			modelsStrings[model] + "_Glossiness.png";
-		diagnostics.log("bodyGlossinTexture: " + requiredPaths.bodyGlossinTexture, Diagnostics::Topic::Simulation);
+		//diagnostics.log("bodyGlossinTexture: " + requiredPaths.bodyGlossinTexture, Diagnostics::Topic::Viewer);
 
 		requiredPaths.opticsTexture = opticsTexture_path;
 
 		std::string wheelLetter = wheelsStrings[modelWheel[model]];
 		requiredPaths.wheelDiffuseTexture = texturesPath + "wheel_" + wheelLetter + "_Diffuse.png";
-		diagnostics.log("wheelDiffuseTexture: " + requiredPaths.wheelDiffuseTexture, Diagnostics::Topic::Simulation);
+		//diagnostics.log("wheelDiffuseTexture: " + requiredPaths.wheelDiffuseTexture, Diagnostics::Topic::Viewer);
 		requiredPaths.wheelGlossinTexture = texturesPath + "wheel_" + wheelLetter + "_Glossiness.png";;
 
-		diagnostics.log("wheelGlossinTexture: " + requiredPaths.wheelGlossinTexture, Diagnostics::Topic::Simulation);
+		//diagnostics.log("wheelGlossinTexture: " + requiredPaths.wheelGlossinTexture, Diagnostics::Topic::Viewer);
 		return requiredPaths;
 	};
 

@@ -8,13 +8,12 @@
 class SimpleScenarioDrawer {
 public:
 	void draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection);
-	SimpleScenarioDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int VBO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation);
+	SimpleScenarioDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation);
 
 private:
 	unsigned int shaderProgram;
 	unsigned int texture;
 	unsigned int VAO;
-	unsigned int VBO;
 	unsigned int viewLocation;
 	unsigned int projectionLocation;
 	unsigned int modelLocation;

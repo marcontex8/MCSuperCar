@@ -21,6 +21,8 @@ private:
 	GLFWwindow* window;
 	std::vector<ElementDrawer*> elementsReferences;
 	std::atomic<bool>* terminationFlag;
+	float window_height = 1200.0f;
+	float window_width = 1200.0f;
 
 public:
 	WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world);

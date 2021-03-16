@@ -26,9 +26,10 @@ public:
 
 	unsigned int viewPosLocation;
 
-	// texture
+	// textures
 	unsigned int texture_diffuse;
 	unsigned int texture_specular;
+
 	// light data
 	glm::vec3 light_ambient;
 	glm::vec3 light_diffuse;

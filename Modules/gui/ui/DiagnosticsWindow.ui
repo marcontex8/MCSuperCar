@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1053</width>
+    <width>1631</width>
     <height>901</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QLabel" name="l_gui_logs">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>20</x>
      <y>10</y>
      <width>121</width>
      <height>21</height>
@@ -73,9 +73,9 @@
   <widget class="QTextEdit" name="te_monitor">
    <property name="geometry">
     <rect>
-     <x>630</x>
+     <x>1110</x>
      <y>40</y>
-     <width>411</width>
+     <width>511</width>
      <height>851</height>
     </rect>
    </property>
@@ -83,7 +83,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>650</x>
+     <x>1120</x>
      <y>10</y>
      <width>211</width>
      <height>20</height>
@@ -107,7 +107,7 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>601</width>
+     <width>1081</width>
      <height>251</height>
     </rect>
    </property>
@@ -117,7 +117,7 @@
     <rect>
      <x>10</x>
      <y>340</y>
-     <width>601</width>
+     <width>1081</width>
      <height>251</height>
     </rect>
    </property>
@@ -127,7 +127,7 @@
     <rect>
      <x>10</x>
      <y>640</y>
-     <width>601</width>
+     <width>1081</width>
      <height>251</height>
     </rect>
    </property>
@@ -135,7 +135,7 @@
   <widget class="QCheckBox" name="cb_autoscroll_GUI">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>1000</x>
      <y>20</y>
      <width>91</width>
      <height>20</height>
@@ -148,7 +148,7 @@
   <widget class="QCheckBox" name="cb_autoscroll_simulation">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>1000</x>
      <y>320</y>
      <width>91</width>
      <height>20</height>
@@ -161,7 +161,7 @@
   <widget class="QCheckBox" name="cb_autoscroll_viewer">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>1000</x>
      <y>620</y>
      <width>91</width>
      <height>20</height>

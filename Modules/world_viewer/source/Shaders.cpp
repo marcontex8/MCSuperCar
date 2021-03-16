@@ -117,34 +117,25 @@ const char* Shaders::textureCarFSCode = R"(
 const char* Shaders::simpleScenarioVSCode = R"(
 		#version 330 core
 		layout (location = 0) in vec3 aPos;
-		layout (location = 1) in vec2 aTexCoord;
 
 		uniform mat4 model;
 		uniform mat4 view;
 		uniform mat4 projection;
-		uniform vec3 offsets[100];
-
-		out vec2 TexCoord;
 
 		void main()
 		{
-		    vec3 offset = offsets[gl_InstanceID];
-			gl_Position = projection * view * model * vec4(aPos + offset, 1.0f);
-			TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+			gl_Position = projection * view * model * vec4(aPos, 1.0f);
 		}
 	)";
 
 
 const char* Shaders::simpleScenarioFSCode = R"(
 		#version 330 core
-
-		in vec2 TexCoord;
 		out vec4 FragColor;
-		uniform sampler2D texture1;
 
 		void main()
 		{
-			FragColor = texture(texture1, TexCoord, 0.2);
+			FragColor = vec4(0.3f, 0.3f, 0.3f, 1.0f);
 		}
 	)";
 
@@ -153,31 +144,43 @@ unsigned int Shaders::boxShader = 0;
 unsigned int Shaders::simpleScenarioShader = 0;
 unsigned int Shaders::textureCarShader = 0;
 
+std::once_flag Shaders::compilationFlag;
+
 
 Shaders::Shaders() {
-	std::call_once(flag2, buildBoxShader);
-	std::call_once(flag3, buildSimpleScenarioShader);
-	std::call_once(flag4, buildTextureCarShader);
+	std::call_once(compilationFlag, buildAllShaders);
 }
 
 Shaders::~Shaders() {
-
+	glDeleteShader(boxShader);
+	glDeleteShader(simpleScenarioShader);
+	glDeleteShader(textureCarShader);
 }
 
-void Shaders::buildTextureCarShader() {
+void Shaders::buildAllShaders(){
 	diagnostics.log("Building TextureCar Shader", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 	textureCarShader = buildShaderProgram(textureCarVSCode, textureCarFSCode);
-}
 
-void Shaders::buildBoxShader() {
 	diagnostics.log("Building Box Shader", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 	boxShader = buildShaderProgram(simpleVSCode, simpleFSCode);
-}
 
-void Shaders::buildSimpleScenarioShader() {
 	diagnostics.log("Building SimpleScenario Shader", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 	simpleScenarioShader = buildShaderProgram(simpleScenarioVSCode, simpleScenarioFSCode);
+
 }
+
+unsigned int Shaders::getBoxShader() {
+	return boxShader;
+}
+
+unsigned int Shaders::getSimpleScenarioShader() {
+	return simpleScenarioShader;
+}
+
+unsigned int Shaders::getTextureCarShader() {
+	return textureCarShader;
+}
+
 
 
 unsigned int Shaders::compileShader(const char* shaderCode, GLenum type) {
@@ -243,15 +246,3 @@ unsigned int Shaders::buildShaderProgram(const char* vertexShaderCode, const cha
 	glDeleteShader(fragmentShader);
 	return shaderProgram;
 };
-
-unsigned int Shaders::getBoxShader() {
-	return boxShader;
-}
-
-unsigned int Shaders::getSimpleScenarioShader() {
-	return simpleScenarioShader;
-}
-
-unsigned int Shaders::getTextureCarShader() {
-	return textureCarShader;
-}

@@ -41,21 +41,18 @@ void WorldViewer::runView() {
     using namespace std::chrono_literals;
     setupWindow();
     //getOpenGLInfo();
-
-
+    glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
 
     // Enable blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    // define camera position
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
 
     // define camera projection matrix
     glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(90.0f), window_height / window_width, 0.1f, 500.0f);
 
 
     DrawersFactory drawersFactory;
@@ -66,6 +63,15 @@ void WorldViewer::runView() {
     while (!glfwWindowShouldClose(window) && !(*terminationFlag))
     {
         std::this_thread::sleep_for(10ms);
+        
+        const float radius = 10.0f;
+        float camX = sin(glfwGetTime()/10) * radius;
+        float camY = cos(glfwGetTime()/10) * radius;
+        glm::mat4 view;
+        view = glm::lookAt(glm::vec3(camX, camY, 10.0f),
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(0.0f, 0.0f, 1.0f));
+
 
         static int i = 0;
         diagnostics.monitor("VIEWER LOOP \t", std::to_string( i++));
@@ -76,9 +82,8 @@ void WorldViewer::runView() {
         glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-
-        //scenario->draw(model, view, projection);
+        model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+        scenario->draw(model, view, projection);
 
         world->applyToElements(
             [&assimpFactory, &drawersFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
@@ -88,7 +93,7 @@ void WorldViewer::runView() {
                 }
                 ElementDrawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    currentElement = assimpFactory.getNewSimpleCarDrawer(carPack001::Model::Minivan, carPack001::Color::Green);
+                    currentElement = assimpFactory.getNewSimpleCarDrawer(carPack001::Model::SUV, carPack001::Color::Red);
                     //currentElement = drawersFactory.newBoxDrawer();
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     diagnostics.log("Added new element to elementsDrawer",Diagnostics::Topic::Viewer);
@@ -109,10 +114,10 @@ void WorldViewer::runView() {
                     << "z: " << element->getPosition()[2]
                     << std::endl;
                 */
-                model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(1.0f, 1.0f, 0.0f));
+                //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(1.0f, 1.0f, 0.0f));
                 
-                //model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-                model = glm::scale(model, glm::vec3(0.0005f, 0.0005f, 0.0005f));
+                //model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+                model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 
                 currentElement->draw(model, view, projection);
                 
@@ -142,7 +147,8 @@ int WorldViewer::setupWindow() {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    this->window = glfwCreateWindow(800, 600, "World Viewer", NULL, NULL);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+    this->window = glfwCreateWindow(1200, 1200, "World Viewer", NULL, NULL);
     if (window == NULL)
     {
         std::cerr << "Failed to create GLFW window" << std::endl;
