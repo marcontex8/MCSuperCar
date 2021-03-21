@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "world_viewer.h"
+#include "WorldViewer.h"
 
 
 #include <QApplication>
@@ -19,7 +19,7 @@
 #include "SimulationManager.h"
 #include "simulationSettings.h"
 
-#include "ViewerManager.h"
+#include "WorldViewer_Manager.h"
 
 extern Diagnostics diagnostics = Diagnostics();
 
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 
 	//INITIALIZING WORLD VIEWER
-	ViewerManager viewerManager(&world);
+	WorldViewerManager viewerManager(&world);
 	viewerManager.initializeWorldView();
 
 	// INITIALIZING GUI
