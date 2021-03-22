@@ -48,12 +48,20 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	
 	SuperCarMain_GUI mainWindow(&simulationManager);
+	mainWindow.move(0, 0);
 	mainWindow.show();
 
 	DiagnosticsWindow diagnosticWindow(&diagnostics);
+	diagnosticWindow.move(mainWindow.width()+10, 0);
 	diagnosticWindow.show();
 	return a.exec();
 
+	static QScreen* screen = QGuiApplication::screens()[0];
+
+	QRect screenGeometry = screen->availableGeometry();
+	int height = screenGeometry.height();
+	int width = screenGeometry.width();
+	//set to middle of screen
 	// INITIALIZING TERMINAL UI
 	/*
 	bool done = false;

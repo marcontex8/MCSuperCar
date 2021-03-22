@@ -7,10 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Scene.h"
+
 class Drawer {
 public:
     virtual ~Drawer() {};
-    virtual void draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection) = 0;
+    virtual void draw(glm::vec3 position, glm::quat orientation, Scene& scene) = 0;
 };
 
 

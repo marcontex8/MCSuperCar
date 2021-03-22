@@ -6,7 +6,7 @@ SimulationElement::SimulationElement() :
 	id(0),
 	name("NewElement"),
 	position(Eigen::Vector3d()),
-	orientation(Eigen::Quaterniond()),
+	orientation(Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0)),
 	mass(1)
 {
 	std::cout << "New generic element created." << std::endl;

@@ -12,18 +12,22 @@ BoxDrawer::BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned 
 	    std::cout << "BoxDrawer initialized" << std::endl;
 }
 
-void BoxDrawer::draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
-    // draw our first triangle
+void BoxDrawer::draw(glm::vec3 position, glm::quat orientation, Scene& scene) {
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, position);
+    model = glm::rotate(model, glm::angle(orientation), glm::axis(orientation));
+    model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+
     glUseProgram(shaderProgram);
 
-    // bind textures on corresponding texture units
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
 
     glBindVertexArray(VAO);
 
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(scene.getView()));
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(scene.getProjection()));
     glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }

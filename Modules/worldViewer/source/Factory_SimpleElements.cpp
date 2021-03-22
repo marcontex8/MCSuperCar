@@ -88,8 +88,8 @@ BoxDrawer* SimpleElementsFactory::newBoxDrawer() {
 	return new BoxDrawer(box_shaderProgram, box_texture, box_VAO, box_VBO, box_viewLoc, box_projectionLoc, box_modelLoc);
 }
 
-SimpleScenarioDrawer* SimpleElementsFactory::newSimpleScenarioDrawer() {
-	return new SimpleScenarioDrawer(simpleScenario_shaderProgram, simpleScenario_texture, simpleScenario_VAO, simpleScenario_viewLoc, simpleScenario_projectionLoc, simpleScenario_modelLoc);
+SimpleTerrainDrawer* SimpleElementsFactory::newSimpleTerrainDrawer() {
+	return new SimpleTerrainDrawer(simpleScenario_shaderProgram, simpleScenario_texture, simpleScenario_VAO, simpleScenario_viewLoc, simpleScenario_projectionLoc, simpleScenario_modelLoc);
 }
 
 

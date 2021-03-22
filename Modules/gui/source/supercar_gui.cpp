@@ -99,8 +99,8 @@ void SuperCarMain_GUI::simulationAddElement() {
     diagnostics.log("Call to simulationAddElement()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     static int id = 0;
     std::string name("elemento");
-    Eigen::Vector3d position(0,0,0);
-    Eigen::Quaterniond orientation;
+    Eigen::Vector3d position(id,0,0);
+    Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
     double mass = 10.0;
     this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
     QString result = "New Element Added";

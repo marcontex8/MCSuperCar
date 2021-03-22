@@ -17,6 +17,7 @@
 
 #include<map>
 
+#include "Scene.h"
 #include "Factory_SimpleElements.h"
 #include "Factory_CarPack001.h"
 #include "Diagnostics.h"
@@ -26,18 +27,17 @@
 extern Diagnostics diagnostics;
 
 WorldViewer::WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world): terminationFlag(terminationFlag), world(world), window(nullptr) {
-    diagnostics.log("WorldViewer | constructor", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-    std::cout << "WorldViewer | constructor" << std::endl;
+    diagnostics.log("WorldViewer | constructor called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 }
 
 
 WorldViewer::~WorldViewer(){
-    std::cout << "WorldViewer | destructor" << std::endl;
+    diagnostics.log("WorldViewer | destructor called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+
 }
 
 void WorldViewer::runView() {
-    std::cout << "WorldViewer | operator()" << std::endl;
-    diagnostics.log("WorldViewer | operator()", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+    diagnostics.log("WorldViewer | runView called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
     using namespace std::chrono_literals;
     setupWindow();
     //getOpenGLInfo();
@@ -47,18 +47,15 @@ void WorldViewer::runView() {
     // Enable blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
 
-
-    // define camera projection matrix
-    glm::mat4 projection;
-    projection = glm::perspective(glm::radians(90.0f), window_height / window_width, 0.1f, 500.0f);
-
-
+    Scene scene(window_height, window_width);
+    scene.setFOV(90.0);
+    scene.setLightPosition(glm::vec3(0.0, 0.0, 100.0));
+    scene.setLightColor(glm::vec3(1.0, 1.0, 1.0));
     SimpleElementsFactory simpleElementsFactory;
     CarPack001Factory carPack001Factory;
 
-    SimpleScenarioDrawer* scenario = simpleElementsFactory.newSimpleScenarioDrawer();
+    SimpleTerrainDrawer* terrain = simpleElementsFactory.newSimpleTerrainDrawer();
     std::vector<Drawer*> elementsDrawer;
     while (!glfwWindowShouldClose(window) && !(*terminationFlag))
     {
@@ -67,10 +64,7 @@ void WorldViewer::runView() {
         const float radius = 10.0f;
         float camX = sin(glfwGetTime()/10) * radius;
         float camY = cos(glfwGetTime()/10) * radius;
-        glm::mat4 view;
-        view = glm::lookAt(glm::vec3(camX, camY, 10.0f),
-            glm::vec3(0.0f, 0.0f, 0.0f),
-            glm::vec3(0.0f, 0.0f, 1.0f));
+        scene.setCameraPosition(glm::vec3(camX, camY, 10.0f));
 
 
         static int i = 0;
@@ -81,12 +75,12 @@ void WorldViewer::runView() {
         //glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-        scenario->draw(model, view, projection);
+        glm::quat rotation = { 1,0,0,0 };
+        //diagnostics.log("rotation:" + std::to_string(rotation.x) + " - " + std::to_string(rotation.y) + " - " + std::to_string(rotation.z) + " - " + std::to_string(rotation.w), Diagnostics::Topic::Viewer);
+        terrain->draw(glm::vec3(0,0,0), rotation, scene);
 
         world->applyToElements(
-            [&carPack001Factory, &simpleElementsFactory, &elementsDrawer, &view, &projection](simulation::SimulationElement* element) {
+            [&carPack001Factory, &simpleElementsFactory, &elementsDrawer, &scene](simulation::SimulationElement* element) {
                 if (element == nullptr) {
                     diagnostics.log("This element is nullptr", Diagnostics::Topic::Viewer);
                     return;
@@ -106,20 +100,15 @@ void WorldViewer::runView() {
                         return;
                     }
                 }
-                // define object position
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]));
                 /*std::cout << "x: " << element->getPosition()[0]
                     << "y: " << element->getPosition()[1]
                     << "z: " << element->getPosition()[2]
                     << std::endl;
                 */
-                //model = glm::rotate(model, (float)glfwGetTime() * glm::radians(30.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-                
-                //model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-                model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
-
-                currentElement->draw(model, view, projection);
+                glm::vec3 position = glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]);
+                glm::dquat orientation = { element->getOrientation().w(), element->getOrientation().x(), element->getOrientation().y(), element->getOrientation().z() };
+                //diagnostics.monitor("element rotation:", std::to_string(orientation.x) + " - " + std::to_string(orientation.y) + " - " + std::to_string(orientation.z) + " - " + std::to_string(orientation.w));
+                currentElement->draw(position, orientation, scene);
                 
             }
         );

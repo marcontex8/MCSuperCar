@@ -3,7 +3,7 @@
 
 #include "Drawer.h"
 #include "Drawer_Box.h"
-#include "Drawer_SimpleScenario.h"
+#include "Drawer_SimpleTerrain.h"
 #include "Shaders.h"
 
 class Textures {
@@ -106,7 +106,7 @@ public:
 	void setupBox();
 	void setupSimpleScenario();
 	BoxDrawer* newBoxDrawer();
-	SimpleScenarioDrawer* newSimpleScenarioDrawer();
+	SimpleTerrainDrawer* newSimpleTerrainDrawer();
 
 };
 

@@ -8,9 +8,15 @@ CarPack001Drawer::CarPack001Drawer(std::vector<CarElement> elements):
 	elements(elements) {}
 
 
-void CarPack001Drawer::draw(glm::mat4 model, glm::mat4 view, glm::mat4 projection) {
+void CarPack001Drawer::draw(glm::vec3 position, glm::quat orientation, Scene& scene) {
 
 	for (const CarElement& element : elements) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, position);
+		model = glm::translate(model, glm::vec3(0.0, 0.0, 0.4));
+		model = glm::rotate(model, glm::angle(orientation), glm::axis(orientation));
+		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+
 		glBindVertexArray(element.VAO);
 		glUseProgram(element.shaderProgram);
 
@@ -20,13 +26,13 @@ void CarPack001Drawer::draw(glm::mat4 model, glm::mat4 view, glm::mat4 projectio
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, element.texture_specular);
 
-		glUniformMatrix4fv(element.viewLocation, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(element.projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(element.viewLocation, 1, GL_FALSE, glm::value_ptr(scene.getView()));
+		glUniformMatrix4fv(element.projectionLocation, 1, GL_FALSE, glm::value_ptr(scene.getProjection()));
 		glUniformMatrix4fv(element.modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
-		glm::vec3 lightColor{ 1.0f, 1.0f, 1.0f };
-		glm::vec3 lightPosition{ 100.0f, 100.0f, 100.0f };
-		glm::vec3 viewPos{ 0.0f, 0.0f, -3.0f };
+		glm::vec3 lightColor	= scene.getLightColor();
+		glm::vec3 lightPosition = scene.getLightPosition();
+		glm::vec3 viewPos		= scene.getCameraPosition();
 
 		glUniform3fv(element.light_positionLocation, 1, glm::value_ptr(lightPosition));
 		glUniform3fv(element.viewPosLocation, 1, glm::value_ptr(viewPos));

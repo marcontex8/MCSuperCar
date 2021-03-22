@@ -5,6 +5,8 @@ add_library(ViewerManager
 	${GLAD_C}
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/WorldViewer_Manager.cpp"
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/WorldViewer.cpp"
+
+	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Scene.cpp"
 	
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Shaders.cpp"
 		
@@ -15,7 +17,7 @@ add_library(ViewerManager
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Factory_SimpleElements.cpp"
 	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Drawer_Box.cpp"
 	
-	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Drawer_SimpleScenario.cpp"
+	"${MCSC_MODULE_WORLD_VIEWER_SOURCE}/Drawer_SimpleTerrain.cpp"
 	)
 
 
