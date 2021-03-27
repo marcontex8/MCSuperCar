@@ -26,10 +26,7 @@ set(PROJECT_SOURCES
 
         "${MCSC_MODULE_GUI_SOURCE}/DiagnosticsWindow.cpp"
         "${MCSC_MODULE_GUI_INCLUDE}/DiagnosticsWindow.h"
-        "${MCSC_MODULE_GUI_UI}/DiagnosticsWindow.ui"
-
-        "${MCSC_MODULE_GUI_SOURCE}/SimulationElementListModel.cpp"
-        "${MCSC_MODULE_GUI_INCLUDE}/SimulationElementListModel.h")
+        "${MCSC_MODULE_GUI_UI}/DiagnosticsWindow.ui")
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${MCSC_MODULE_GUI_DIR}/ui/)
 

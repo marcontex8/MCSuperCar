@@ -6,6 +6,7 @@
 
 #include "Diagnostics.h"
 #include "SimulationElement.h"
+#include "SimulationElement_Car.h"
 #include "SimulatedWorld.h"
 #include "SimulationController.h"
 

@@ -85,7 +85,7 @@ void SimpleElementsFactory::setupBox() {
 }
 
 BoxDrawer* SimpleElementsFactory::newBoxDrawer() {
-	return new BoxDrawer(box_shaderProgram, box_texture, box_VAO, box_VBO, box_viewLoc, box_projectionLoc, box_modelLoc);
+	return new BoxDrawer(box_shaderProgram, box_texture, box_VAO, box_viewLoc, box_projectionLoc, box_modelLoc);
 }
 
 SimpleTerrainDrawer* SimpleElementsFactory::newSimpleTerrainDrawer() {

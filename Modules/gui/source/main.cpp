@@ -14,7 +14,6 @@
 #include "DiagnosticsWindow.h"
 #include "ui_supercar_gui.h"
 
-#include "SimulationElementListModel.h"
 #include "Diagnostics.h"
 #include "SimulationManager.h"
 #include "simulationSettings.h"

@@ -3,8 +3,6 @@
 
 #include <QMainWindow>
 #include "SimulationManager.h"
-#include "SimulationElementListModel.h"
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SuperCarMain_GUI; }
@@ -21,7 +19,8 @@ public:
 private:
     Ui::SuperCarMain_GUI*ui;
     simulation::SimulationManager* manager;
-    SimulationElementListModel* elementsListModel;
+    const std::vector<std::string> getElementsList();
+
 
 private slots:
     void simulationBegin();

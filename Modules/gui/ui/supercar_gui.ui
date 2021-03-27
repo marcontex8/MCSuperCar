@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>364</height>
+    <width>654</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,16 +26,6 @@
     <property name="title">
      <string>Simulation Items</string>
     </property>
-    <widget class="QListView" name="elements_list_view">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>371</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
     <widget class="QWidget" name="gridLayoutWidget">
      <property name="geometry">
       <rect>
@@ -78,9 +68,81 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="new_element_type"/>
+       <widget class="QComboBox" name="cb_newElementType">
+        <item>
+         <property name="text">
+          <string>Box</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Car_Sport</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Car_SUV</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Car_Hatchback</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Car_Minivan</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
+    </widget>
+    <widget class="QTextEdit" name="te_list">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>371</width>
+       <height>121</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pb_remove">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>80</y>
+       <width>81</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="sb_items_id">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>50</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>50</y>
+       <width>31</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Item</string>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
@@ -179,37 +241,11 @@
       </item>
      </layout>
     </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>270</y>
-      <width>631</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Simulation</string>
-    </property>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>20</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Time:</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="simulation_time">
      <property name="geometry">
       <rect>
-       <x>90</x>
-       <y>20</y>
+       <x>80</x>
+       <y>220</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -218,30 +254,105 @@
       <string>0:0:0:0:0</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_4">
+    <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>20</y>
-       <width>91</width>
+       <x>40</x>
+       <y>220</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Real Cycle Time:</string>
+      <string>Time:</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+   </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>280</y>
+      <width>631</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Controls</string>
+    </property>
+    <widget class="QSlider" name="hs_steering">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>20</y>
+       <x>210</x>
+       <y>110</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QSlider" name="vs_accelerator">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>80</y>
+       <width>41</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="sb_controls_id">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>30</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
        <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Selected Item</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>40</y>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>0.0</string>
+      <string>Steering Position</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>40</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Accelerator</string>
      </property>
     </widget>
    </widget>
@@ -251,7 +362,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>658</width>
+     <width>654</width>
      <height>21</height>
     </rect>
    </property>

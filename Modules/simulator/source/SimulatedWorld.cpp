@@ -2,6 +2,7 @@
 #include<iostream>
 #include "Diagnostics.h"
 #include <chrono>
+#include <SimulationElement_Car.h>
 
 using namespace simulation;
 
@@ -9,8 +10,15 @@ extern Diagnostics diagnostics;
 
 int SimulatedWorld::addElement(SimulationElement&& element) {
 	std::unique_lock<std::shared_mutex> lk(elementsVectorMutex);
-	elements.push_back(new SimulationElement(element));
-	std::cout << "SimulatedWorld::addElement" << std::endl;
+	std::cout << "addElement: " << typeid(element).name() << std::endl;
+	SimulationElement* newElement;
+	if (typeid(element) == typeid(SimulationElement_Car)) {
+		newElement = new SimulationElement_Car(dynamic_cast<SimulationElement_Car&&>(element));
+	}
+	else {
+		newElement = new SimulationElement(element);
+	}
+	elements.push_back(newElement);
 	diagnostics.log("SimulatedWorld::addElement", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
 	return 1;
 };
@@ -30,8 +38,4 @@ SimulationElement* SimulatedWorld::getElementAtIndex(int index) const {
 	{
 		return elements[index];
 	}
-}
-
-void SimulatedWorld::doSomething() {
-	std::cout << "Ciao!" << std::endl;
 }

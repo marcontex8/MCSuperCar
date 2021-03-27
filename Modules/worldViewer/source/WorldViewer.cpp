@@ -4,7 +4,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#include <chrono>
+#include<map>
 
 // Used to correctly include STB image library
 //#define STB_IMAGE_IMPLEMENTATION
@@ -15,14 +16,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include<map>
 
 #include "Scene.h"
 #include "Factory_SimpleElements.h"
 #include "Factory_CarPack001.h"
 #include "Diagnostics.h"
 
-#include <chrono>
+
+#include "SimulationElement_Car.h"
+
 
 extern Diagnostics diagnostics;
 
@@ -78,6 +80,7 @@ void WorldViewer::runView() {
         glm::quat rotation = { 1,0,0,0 };
         //diagnostics.log("rotation:" + std::to_string(rotation.x) + " - " + std::to_string(rotation.y) + " - " + std::to_string(rotation.z) + " - " + std::to_string(rotation.w), Diagnostics::Topic::Viewer);
         terrain->draw(glm::vec3(0,0,0), rotation, scene);
+        //diagnostics.log("New Drawing cycle", Diagnostics::Topic::Viewer);
 
         world->applyToElements(
             [&carPack001Factory, &simpleElementsFactory, &elementsDrawer, &scene](simulation::SimulationElement* element) {
@@ -87,8 +90,29 @@ void WorldViewer::runView() {
                 }
                 Drawer* currentElement = nullptr;
                 if (element->id >= elementsDrawer.size()) {
-                    currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::SUV, carPack001::Color::Red);
-                    //currentElement = drawersFactory.newBoxDrawer();
+                    //diagnostics.log("element id: " + std::to_string(element->id) + " >= elementDrawer.size(): " + std::to_string(elementsDrawer.size()), Diagnostics::Topic::Viewer);
+                    if (typeid(*element) == typeid(simulation::SimulationElement_Car)) {
+                        simulation::SimulationElement_Car* element_casted = dynamic_cast<simulation::SimulationElement_Car*>(element);
+                        switch (element_casted->model) {
+                        case simulation::CarModels::SUV:
+                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::SUV, carPack001::Color::Red);
+                            break;
+                        case simulation::CarModels::Hatchback:
+                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Hatchback, carPack001::Color::Blue);
+                            break;
+                        case simulation::CarModels::Minivan:
+                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Minivan, carPack001::Color::White);
+                            break;
+                        case simulation::CarModels::Sport:
+                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Sport, carPack001::Color::Yellow);
+                            break;
+                        default:
+                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Compact, carPack001::Color::Black);
+                        }
+                    }
+                    else {
+                        currentElement = simpleElementsFactory.newBoxDrawer();
+                    }
                     elementsDrawer.insert(elementsDrawer.begin() + element->id, currentElement);
                     diagnostics.log("Added new element to elementsDrawer",Diagnostics::Topic::Viewer);
                 }
@@ -100,18 +124,20 @@ void WorldViewer::runView() {
                         return;
                     }
                 }
-                /*std::cout << "x: " << element->getPosition()[0]
-                    << "y: " << element->getPosition()[1]
-                    << "z: " << element->getPosition()[2]
-                    << std::endl;
-                */
-                glm::vec3 position = glm::vec3(element->getPosition()[0], element->getPosition()[1], element->getPosition()[2]);
-                glm::dquat orientation = { element->getOrientation().w(), element->getOrientation().x(), element->getOrientation().y(), element->getOrientation().z() };
-                //diagnostics.monitor("element rotation:", std::to_string(orientation.x) + " - " + std::to_string(orientation.y) + " - " + std::to_string(orientation.z) + " - " + std::to_string(orientation.w));
+
+                auto elementPosition = element->getPosition();
+                auto elementOrientation = element->getOrientation();
+                glm::vec3 position = glm::vec3(elementPosition[0], elementPosition[1], elementPosition[2]);
+                glm::dquat orientation = { elementOrientation.w(), elementOrientation.x(), elementOrientation.y(), elementOrientation.z() };
+                //diagnostics.log("drawing element id "+std::to_string(element->id), Diagnostics::Topic::Viewer);
                 currentElement->draw(position, orientation, scene);
                 
             }
         );
+        diagnostics.monitor("elementsDrawer.size(): ", std::to_string(elementsDrawer.size()));
+
+        elementsDrawer.size();
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

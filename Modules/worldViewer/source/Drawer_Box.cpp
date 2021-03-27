@@ -1,11 +1,10 @@
 #include "Drawer_Box.h"
 #include <iostream>
 
-BoxDrawer::BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int VBO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation) :
+BoxDrawer::BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation) :
     shaderProgram(shaderProgram),
 	texture(texture),
 	VAO(VAO),
-    VBO(VBO),
     viewLocation(viewLocation),
     projectionLocation(projectionLocation),
     modelLocation(modelLocation) {
@@ -14,9 +13,10 @@ BoxDrawer::BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned 
 
 void BoxDrawer::draw(glm::vec3 position, glm::quat orientation, Scene& scene) {
     glm::mat4 model = glm::mat4(1.0f);
+    model = glm::scale(model, glm::vec3(2.5f, 2.5f, 2.5f));
     model = glm::translate(model, position);
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.5f));
     model = glm::rotate(model, glm::angle(orientation), glm::axis(orientation));
-    model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 
     glUseProgram(shaderProgram);
 

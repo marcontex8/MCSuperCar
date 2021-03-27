@@ -22,10 +22,6 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* manager, QWidg
     ui->pause->setEnabled(false);
     ui->cycleTime->setEnabled(true);
 
-    // Initializing and connecting GUI with simulation elements
-    elementsListModel = new SimulationElementListModel(manager->simulatedWorld);
-    ui->elements_list_view->setModel(elementsListModel);
-
     //Begin - End
     connect(ui->begin,  &QPushButton::clicked, this, &SuperCarMain_GUI::simulationBegin);
     connect(ui->end,    &QPushButton::clicked, this, &SuperCarMain_GUI::simulationEnd);
@@ -98,15 +94,44 @@ void SuperCarMain_GUI::simulationPause() {
 void SuperCarMain_GUI::simulationAddElement() {
     diagnostics.log("Call to simulationAddElement()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     static int id = 0;
-    std::string name("elemento");
-    Eigen::Vector3d position(id,0,0);
-    Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
-    double mass = 10.0;
-    this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
-    QString result = "New Element Added";
-    emit elementsListModel->layoutChanged();
-        //editCompleted(result);
+    std::string type = this->ui->cb_newElementType->currentText().toStdString();
+    if (type == "Car_SUV") {
+        Eigen::Vector3d position(id, 0, 0);
+        Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
+        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++,simulation::CarModels::SUV));
+    }
+    else if (type == "Car_Sport") {
+        Eigen::Vector3d position(id, 0, 0);
+        Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
+        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Sport));
+    }
+    else if (type == "Car_Hatchback") {
+        Eigen::Vector3d position(id, 0, 0);
+        Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
+        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Hatchback));
+    }
+    else if (type == "Car_Minivan") {
+        Eigen::Vector3d position(id, 0, 0);
+        Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
+        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Minivan));
+    }
+    else if (type == "Box") {
+        std::string name("Box");
+        Eigen::Vector3d position(id, 0, 0);
+        Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
+        double mass = 10.0;
+        this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
+    }
+    else {
+        diagnostics.log("Invalid type selected for new element.", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Error);
+    }
+    std::string elementsListText;
+    this->manager->simulatedWorld->applyToElements([&elementsListText](simulation::SimulationElement* element) {
+        elementsListText += std::string(std::to_string(element->id) + " - " + element->name + "\n");
+    });
+    this->ui->te_list->setText(QString::fromStdString(elementsListText));
 }
+
 
 
 

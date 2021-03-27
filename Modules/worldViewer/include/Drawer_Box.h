@@ -7,13 +7,12 @@ private:
 	unsigned int shaderProgram;
 	unsigned int texture;
 	unsigned int VAO;
-	unsigned int VBO;
 	unsigned int viewLocation;
 	unsigned int projectionLocation;
 	unsigned int modelLocation;
 
 public:
-	BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int VBO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation);
+	BoxDrawer(unsigned int shaderProgram, unsigned int texture, unsigned int VAO, unsigned int viewLocation, unsigned int projectionLocation, unsigned int modelLocation);
 
 	void draw(glm::vec3 position, glm::quat orientation, Scene& scene) override;
 };

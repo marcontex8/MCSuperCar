@@ -11,6 +11,7 @@ namespace simulation {
 	class SimulationElement {
 	protected:
 		Eigen::Vector3d position;
+		Eigen::Vector3d velocity;
 		Eigen::Quaterniond orientation;
 		mutable std::shared_mutex dataMutex;
 

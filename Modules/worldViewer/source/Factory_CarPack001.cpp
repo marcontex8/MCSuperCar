@@ -21,6 +21,7 @@ void CarPack001Factory::setupSimpleCar(carPack001::Model model, carPack001::Colo
         processNode(carScene->mRootNode, carScene);
     }
     customizations.insert(std::pair(std::tuple(model, color), carElements));
+    carElements.clear();
 }
 
 
