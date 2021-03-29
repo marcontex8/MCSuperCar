@@ -6,6 +6,8 @@
 #include<vector>
 
 namespace carPack001 {
+	class LoadingElementException : public std::exception {};
+
 	enum class Model {
 		Compact,
 		Coupe,

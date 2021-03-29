@@ -93,21 +93,28 @@ void WorldViewer::runView() {
                     //diagnostics.log("element id: " + std::to_string(element->id) + " >= elementDrawer.size(): " + std::to_string(elementsDrawer.size()), Diagnostics::Topic::Viewer);
                     if (typeid(*element) == typeid(simulation::SimulationElement_Car)) {
                         simulation::SimulationElement_Car* element_casted = dynamic_cast<simulation::SimulationElement_Car*>(element);
-                        switch (element_casted->model) {
-                        case simulation::CarModels::SUV:
-                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::SUV, carPack001::Color::Red);
-                            break;
-                        case simulation::CarModels::Hatchback:
-                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Hatchback, carPack001::Color::Blue);
-                            break;
-                        case simulation::CarModels::Minivan:
-                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Minivan, carPack001::Color::White);
-                            break;
-                        case simulation::CarModels::Sport:
-                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Sport, carPack001::Color::Yellow);
-                            break;
-                        default:
-                            currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Compact, carPack001::Color::Black);
+                        try {
+                            switch (element_casted->model) {
+                            case simulation::CarModels::SUV:
+                                currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::SUV, carPack001::Color::Red);
+                                break;
+                            case simulation::CarModels::Hatchback:
+                                currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Hatchback, carPack001::Color::Blue);
+                                break;
+                            case simulation::CarModels::Minivan:
+                                currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Minivan, carPack001::Color::White);
+                                break;
+                            case simulation::CarModels::Sport:
+                                currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Sport, carPack001::Color::Yellow);
+                                break;
+                            default:
+                                currentElement = carPack001Factory.getNewSimpleCarDrawer(carPack001::Model::Compact, carPack001::Color::Black);
+                            }
+                        }
+                        catch (carPack001::LoadingElementException e) {
+                            diagnostics.log("Something went wrong with generation of simple car.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Error);
+                            elementsDrawer.insert(elementsDrawer.begin() + element->id, nullptr);
+                            return;
                         }
                     }
                     else {
@@ -120,7 +127,7 @@ void WorldViewer::runView() {
                 {
                     currentElement = elementsDrawer[element->id];
                     if (currentElement == nullptr) {
-                        diagnostics.log("This shoud not happen!!", Diagnostics::Topic::Viewer,Diagnostics::Verbosity::Error);
+                        // This can happen if there was a problem with the instantiation of a drawer. In this case it is necessary to avoid the call to drwa().
                         return;
                     }
                 }

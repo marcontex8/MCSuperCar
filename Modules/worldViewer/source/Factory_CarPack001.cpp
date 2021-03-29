@@ -1,4 +1,7 @@
 #include "Factory_CarPack001.h"
+
+#include <exception>
+
 #include "Diagnostics.h"
 #include <stb_image.h>
 
@@ -17,9 +20,10 @@ void CarPack001Factory::setupSimpleCar(carPack001::Model model, carPack001::Colo
     diagnostics.log("setting up SimpleCar", Diagnostics::Topic::Viewer);
     currentPaths = getPaths(model, color);
     const aiScene* carScene = loadModel(currentPaths.model);
-    if (carScene != nullptr) {
-        processNode(carScene->mRootNode, carScene);
+    if (carScene == nullptr) {
+        throw carPack001::LoadingElementException();
     }
+    processNode(carScene->mRootNode, carScene);
     customizations.insert(std::pair(std::tuple(model, color), carElements));
     carElements.clear();
 }
