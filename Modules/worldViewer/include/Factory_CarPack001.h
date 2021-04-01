@@ -25,7 +25,7 @@ private:
 	std::vector<CarElement> carElements;
 
 	Assimp::Importer importer;
-	Shaders shaders;
+	Shaders* shaders;
 
 	std::map<std::tuple<carPack001::Model, carPack001::Color>, std::vector<CarElement>> customizations;
 
@@ -38,7 +38,7 @@ private:
 	void setupSimpleCar(carPack001::Model model, carPack001::Color color);
 
 public:
-	CarPack001Factory();
+	CarPack001Factory(Shaders* shaders);
 	~CarPack001Factory();
 	CarPack001Drawer* getNewSimpleCarDrawer(carPack001::Model model = carPack001::Model::Hatchback, carPack001::Color color = carPack001::Color::Blue);
 };

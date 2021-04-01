@@ -9,7 +9,7 @@ constexpr bool SPECIAL_DEBUG_LOGS = false;
 
 extern Diagnostics diagnostics;
 
-CarPack001Factory::CarPack001Factory() {
+CarPack001Factory::CarPack001Factory(Shaders* shaders):shaders(shaders) {
 }
 
 CarPack001Factory::~CarPack001Factory() {
@@ -161,7 +161,7 @@ void CarPack001Factory::processNode(aiNode* node, const aiScene* scene)
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         processMesh(mesh, scene, carElement);
 
-        carElement.shaderProgram = shaders.getTextureCarShader();
+        carElement.shaderProgram = shaders->getTextureCarShader();
         glUseProgram(carElement.shaderProgram);
 
         carElement.modelLocation = glGetUniformLocation(carElement.shaderProgram, "model");

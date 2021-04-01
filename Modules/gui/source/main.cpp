@@ -1,24 +1,11 @@
-#include <iostream>
-
-#include "WorldViewer.h"
-
-
 #include <QApplication>
-#include <QAbstractItemModel>
-#include <QListView>
-#include <qpushbutton.h>
+
 
 #include "supercar_gui.h"
-#include "ui_supercar_gui.h"
-
-#include "DiagnosticsWindow.h"
-#include "ui_supercar_gui.h"
-
 #include "Diagnostics.h"
 #include "SimulationManager.h"
-#include "simulationSettings.h"
-
 #include "WorldViewer_Manager.h"
+#include "DiagnosticsWindow.h"
 
 extern Diagnostics diagnostics = Diagnostics();
 
@@ -46,7 +33,7 @@ int main(int argc, char *argv[])
 	// INITIALIZING GUI
 	QApplication a(argc, argv);
 	
-	SuperCarMain_GUI mainWindow(&simulationManager);
+	SuperCarMain_GUI mainWindow(&simulationManager, &viewerManager);
 	mainWindow.move(0, 0);
 	mainWindow.show();
 

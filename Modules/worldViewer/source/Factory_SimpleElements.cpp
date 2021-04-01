@@ -1,6 +1,6 @@
 #include "Factory_SimpleElements.h"
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 
@@ -76,7 +76,7 @@ void Vertices::setUpVertices(const float* verticesArray, const size_t size, unsi
 
 
 void SimpleElementsFactory::setupBox() {
-	box_shaderProgram = shaders.getBoxShader();
+	box_shaderProgram = shaders->getBoxShader();
 	box_texture = Textures::generateTexture(textures.boxTexturePath);
 	Vertices::setUpTexturedVertices(Vertices::cubeTexturedVertices, Vertices::cubeTexturedSize, box_VBO, box_VAO);
 	glUseProgram(box_shaderProgram);
@@ -95,7 +95,7 @@ SimpleTerrainDrawer* SimpleElementsFactory::newSimpleTerrainDrawer() {
 
 
 void SimpleElementsFactory::setupSimpleScenario() {
-	simpleScenario_shaderProgram = shaders.getSimpleScenarioShader();
+	simpleScenario_shaderProgram = shaders->getSimpleScenarioShader();
 	Vertices::setUpVertices(Vertices::simpleScenarioVertices, Vertices::simpleScenarioSize, simpleScenario_VAO);
 	glUseProgram(simpleScenario_shaderProgram);
 	simpleScenario_modelLoc = glGetUniformLocation(simpleScenario_shaderProgram, "model");
@@ -104,7 +104,7 @@ void SimpleElementsFactory::setupSimpleScenario() {
 }
 
 
-SimpleElementsFactory::SimpleElementsFactory() {
+SimpleElementsFactory::SimpleElementsFactory(Shaders* shaders):shaders(shaders) {
 	setupBox();
 	setupSimpleScenario();
 }

@@ -81,7 +81,7 @@ public:
 
 class SimpleElementsFactory {
 private:
-	Shaders shaders;
+	Shaders* shaders;
 	Textures textures;
 	Vertices vertices;
 	unsigned int box_VAO = 0;
@@ -101,7 +101,7 @@ private:
 	unsigned int simpleScenario_translationsLoc = 0;
 
 public:
-	SimpleElementsFactory();
+	SimpleElementsFactory(Shaders* shaders);
 	~SimpleElementsFactory();
 	void setupBox();
 	void setupSimpleScenario();

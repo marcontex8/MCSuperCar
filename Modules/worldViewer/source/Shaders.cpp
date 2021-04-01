@@ -140,18 +140,13 @@ const char* Shaders::simpleScenarioFSCode = R"(
 	)";
 
 
-unsigned int Shaders::boxShader = 0;
-unsigned int Shaders::simpleScenarioShader = 0;
-unsigned int Shaders::textureCarShader = 0;
-
-std::once_flag Shaders::compilationFlag;
-
 
 Shaders::Shaders() {
-	std::call_once(compilationFlag, buildAllShaders);
+	buildAllShaders();
 }
 
 Shaders::~Shaders() {
+	diagnostics.log("Shader destructor called", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 	glDeleteShader(boxShader);
 	glDeleteShader(simpleScenarioShader);
 	glDeleteShader(textureCarShader);

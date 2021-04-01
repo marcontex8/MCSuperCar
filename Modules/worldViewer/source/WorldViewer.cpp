@@ -8,7 +8,7 @@
 #include<map>
 
 // Used to correctly include STB image library
-//#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 // GLM
@@ -16,7 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "Shaders.h"
 #include "Scene.h"
 #include "Factory_SimpleElements.h"
 #include "Factory_CarPack001.h"
@@ -29,19 +29,25 @@
 extern Diagnostics diagnostics;
 
 WorldViewer::WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world): terminationFlag(terminationFlag), world(world), window(nullptr) {
-    diagnostics.log("WorldViewer | constructor called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+    diagnostics.log("WorldViewer | constructor called", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 }
 
 
 WorldViewer::~WorldViewer(){
-    diagnostics.log("WorldViewer | destructor called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+    diagnostics.log("WorldViewer | destructor called", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 
 }
 
 void WorldViewer::runView() {
-    diagnostics.log("WorldViewer | runView called", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
+    diagnostics.log("WorldViewer | runView called", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
     using namespace std::chrono_literals;
-    setupWindow();
+    try {
+        setupWindow();
+    }
+    catch (std::exception e) {
+        diagnostics.log("Error while setting up window. Terminating runView()", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Error);
+        return;
+    }
     //getOpenGLInfo();
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
@@ -50,12 +56,13 @@ void WorldViewer::runView() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Scene scene(window_height, window_width);
+    Scene scene((float)window_height, (float)window_width);
     scene.setFOV(90.0);
     scene.setLightPosition(glm::vec3(0.0, 0.0, 100.0));
     scene.setLightColor(glm::vec3(1.0, 1.0, 1.0));
-    SimpleElementsFactory simpleElementsFactory;
-    CarPack001Factory carPack001Factory;
+    Shaders shaders;
+    SimpleElementsFactory simpleElementsFactory(&shaders);
+    CarPack001Factory carPack001Factory(&shaders);
 
     SimpleTerrainDrawer* terrain = simpleElementsFactory.newSimpleTerrainDrawer();
     std::vector<Drawer*> elementsDrawer;
@@ -68,7 +75,18 @@ void WorldViewer::runView() {
         float camY = cos(glfwGetTime()/10) * radius;
         scene.setCameraPosition(glm::vec3(camX, camY, 10.0f));
 
+        int errorCode = glfwGetError(nullptr);
+        diagnostics.monitor("glfw error code \t", std::to_string(errorCode));
 
+        /*
+        GLFWwindow* window = glfwGetCurrentContext();
+        if (window == NULL) {
+            diagnostics.monitor("glfw current contex window \t", std::string("is null!"));
+        } 
+        else {
+            diagnostics.monitor("glfw current contex window \t", std::string("OK"));
+        }
+        */
         static int i = 0;
         diagnostics.monitor("VIEWER LOOP \t", std::to_string( i++));
 
@@ -77,11 +95,12 @@ void WorldViewer::runView() {
         //glClearColor(0.2f, 0.53f, 0.3f, 1.0f);
         glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         glm::quat rotation = { 1,0,0,0 };
         //diagnostics.log("rotation:" + std::to_string(rotation.x) + " - " + std::to_string(rotation.y) + " - " + std::to_string(rotation.z) + " - " + std::to_string(rotation.w), Diagnostics::Topic::Viewer);
         terrain->draw(glm::vec3(0,0,0), rotation, scene);
         //diagnostics.log("New Drawing cycle", Diagnostics::Topic::Viewer);
-
+        
         world->applyToElements(
             [&carPack001Factory, &simpleElementsFactory, &elementsDrawer, &scene](simulation::SimulationElement* element) {
                 if (element == nullptr) {
@@ -144,12 +163,14 @@ void WorldViewer::runView() {
         diagnostics.monitor("elementsDrawer.size(): ", std::to_string(elementsDrawer.size()));
 
         elementsDrawer.size();
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    glfwTerminate();
+
+    glfwMakeContextCurrent(NULL);
+    glfwDestroyWindow(window);
+    window = NULL;
 }
 
 void WorldViewer::processInput()
@@ -159,9 +180,7 @@ void WorldViewer::processInput()
 }
 
 
-int WorldViewer::setupWindow() {
-    //initialize window
-    glfwInit();
+void WorldViewer::setupWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -170,25 +189,25 @@ int WorldViewer::setupWindow() {
 #endif
 
     glfwWindowHint(GLFW_SAMPLES, 4);
-    this->window = glfwCreateWindow(1200, 1200, "World Viewer", NULL, NULL);
+     
+    this->window = glfwCreateWindow(window_height, window_width, "World Viewer", NULL, NULL); // use glfwGetPrimaryMonitor() to obtain full screen
     if (window == NULL)
     {
-        std::cerr << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
+        diagnostics.log("Failed to create GLFW window.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Error);
+        throw WindowGenerationException();
     }
+    diagnostics.log("GLFW window created.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* window, int width, int height) {glViewport(0, 0, width, height);});
 
-
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cerr << "Failed to initialize GLAD" << std::endl;
-        return -1;
+        diagnostics.log("Failed to initialize GLAD.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Error);
+        throw GladInitializationException();
     }
-    std::cerr << "GLAD initialized" << std::endl;
+    diagnostics.log("Glad correctly initialized.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 
-    return 0;
+    glViewport(0,0, window_height, window_width);
 }
 
 

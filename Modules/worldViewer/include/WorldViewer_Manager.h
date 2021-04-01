@@ -18,6 +18,7 @@ public:
 	WorldViewerManager(simulation::SimulatedWorld* world);
 	~WorldViewerManager();
 	void initializeWorldView();
+	void terminateWorldView();
 };
 
 

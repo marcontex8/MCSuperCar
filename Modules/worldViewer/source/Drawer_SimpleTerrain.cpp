@@ -15,8 +15,8 @@ void SimpleTerrainDrawer::draw(glm::vec3 position, glm::quat orientation, Scene&
     glUseProgram(shaderProgram);
 
     // bind textures on corresponding texture units
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_2D, texture);
     glBindVertexArray(VAO);
 
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(scene.getView()));

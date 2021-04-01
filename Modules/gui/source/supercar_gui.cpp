@@ -1,15 +1,17 @@
 #include "supercar_gui.h"
-#include "./ui_supercar_gui.h"
+#include "ui_supercar_gui.h"
 
 #include "Diagnostics.h"
 
 #include <iostream>
+#include "WorldViewer_Manager.h"
 
 extern Diagnostics diagnostics;
 
 
-SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* manager, QWidget* parent) :
-    manager(manager),
+SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget* parent) :
+    simulationManager(simulationManager),
+    viewerManager(viewerManager),
     QMainWindow(parent),
     ui(new Ui::SuperCarMain_GUI)
 {
@@ -36,6 +38,9 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* manager, QWidg
     //Cycle Time
     connect(ui->cycleTime, QOverload<int>::of(&QSpinBox::valueChanged), this, &SuperCarMain_GUI::simulationCycleTimeChanged);
 
+    // menu show wlrld viewer toggle
+    connect(ui->actionWorld_Viewer, &QAction::toggled, this, &SuperCarMain_GUI::showViewerToggled);
+
 }
 
 SuperCarMain_GUI::~SuperCarMain_GUI()
@@ -48,7 +53,7 @@ SuperCarMain_GUI::~SuperCarMain_GUI()
 void SuperCarMain_GUI::simulationBegin() {
     diagnostics.log("call to simulationBegin()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
-    this->manager->beginSimulation();
+    this->simulationManager->beginSimulation();
 
     ui->begin->setEnabled(false);
     ui->end->setEnabled(true);
@@ -62,7 +67,7 @@ void SuperCarMain_GUI::simulationBegin() {
 void SuperCarMain_GUI::simulationEnd() {
     diagnostics.log("Call to simulationEnd()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
-    this->manager->endSimulation();
+    this->simulationManager->endSimulation();
 
     ui->begin->setEnabled(true);
     ui->end->setEnabled(false);
@@ -76,7 +81,7 @@ void SuperCarMain_GUI::simulationEnd() {
 void SuperCarMain_GUI::simulationPlay() {
     diagnostics.log("Call to simulationPlay()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
-    this->manager->playSimulation();
+    this->simulationManager->playSimulation();
     
     ui->play->setEnabled(false);
     ui->pause->setEnabled(true);
@@ -85,7 +90,7 @@ void SuperCarMain_GUI::simulationPlay() {
 void SuperCarMain_GUI::simulationPause() {
     diagnostics.log("Call to simulationPause()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
-    this->manager->pauseSimulation();
+    this->simulationManager->pauseSimulation();
 
     ui->play->setEnabled(true);
     ui->pause->setEnabled(true);
@@ -98,35 +103,35 @@ void SuperCarMain_GUI::simulationAddElement() {
     if (type == "Car_SUV") {
         Eigen::Vector3d position(id, 0, 0);
         Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
-        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++,simulation::CarModels::SUV));
+        this->simulationManager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++,simulation::CarModels::SUV));
     }
     else if (type == "Car_Sport") {
         Eigen::Vector3d position(id, 0, 0);
         Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
-        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Sport));
+        this->simulationManager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Sport));
     }
     else if (type == "Car_Hatchback") {
         Eigen::Vector3d position(id, 0, 0);
         Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
-        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Hatchback));
+        this->simulationManager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Hatchback));
     }
     else if (type == "Car_Minivan") {
         Eigen::Vector3d position(id, 0, 0);
         Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
-        this->manager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Minivan));
+        this->simulationManager->simulatedWorld->addElement(simulation::SimulationElement_Car(id++, simulation::CarModels::Minivan));
     }
     else if (type == "Box") {
         std::string name("Box");
         Eigen::Vector3d position(id, 0, 0);
         Eigen::Quaterniond orientation(1.0, 0.0, 0.0, 0.0);
         double mass = 10.0;
-        this->manager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
+        this->simulationManager->simulatedWorld->addElement(simulation::SimulationElement(id++, name, position, orientation, mass));
     }
     else {
         diagnostics.log("Invalid type selected for new element.", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Error);
     }
     std::string elementsListText;
-    this->manager->simulatedWorld->applyToElements([&elementsListText](simulation::SimulationElement* element) {
+    this->simulationManager->simulatedWorld->applyToElements([&elementsListText](simulation::SimulationElement* element) {
         elementsListText += std::string(std::to_string(element->id) + " - " + element->name + "\n");
     });
     this->ui->te_list->setText(QString::fromStdString(elementsListText));
@@ -138,7 +143,19 @@ void SuperCarMain_GUI::simulationAddElement() {
 void SuperCarMain_GUI::simulationCycleTimeChanged(int newTime) {
     diagnostics.log("Call to simulationCycleTimeChanged()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     if (newTime > 0 && newTime < 1000) {
-        this->manager->simulationController.setSimulationIntervalMillis(newTime);
+        this->simulationManager->simulationController.setSimulationIntervalMillis(newTime);
         diagnostics.monitor("Simulation Interval", std::to_string(newTime));
+    }
+}
+
+
+
+
+void SuperCarMain_GUI::showViewerToggled(bool value) {
+    if (value) {
+        viewerManager->initializeWorldView();
+    }
+    else {
+        viewerManager->terminateWorldView();  
     }
 }
