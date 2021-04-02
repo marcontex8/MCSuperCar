@@ -37,56 +37,6 @@ int main(int argc, char *argv[])
 	mainWindow.move(0, 0);
 	mainWindow.show();
 
-	DiagnosticsWindow diagnosticWindow(&diagnostics);
-	diagnosticWindow.move(mainWindow.width()+10, 0);
-	diagnosticWindow.show();
+
 	return a.exec();
-
-	static QScreen* screen = QGuiApplication::screens()[0];
-
-	QRect screenGeometry = screen->availableGeometry();
-	int height = screenGeometry.height();
-	int width = screenGeometry.width();
-	//set to middle of screen
-	// INITIALIZING TERMINAL UI
-	/*
-	bool done = false;
-	while (!done) {
-		std::cout << "nuovo ciclo" << std::endl;
-		std::string input;
-		// user input
-		std::getline(std::cin, input);
-		std::cout << input << std::endl;
-		if (input == "q") {
-
-			std::cout << "Simulation End required." << std::endl;
-			simulationManager.endSimulation();
-			while (!simulationManager.simulationEnded()) {
-				std::cout << "waiting for simulation to end..." << std::endl;
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
-				continue;
-			}
-			done = true;
-			input = "";
-			break;
-		}
-
-		if (input == "p") {
-			std::cout << "Simulation pause required." << std::endl;
-			simulationManager.pauseSimulation();
-			std::this_thread::sleep_for(std::chrono::milliseconds(50));
-			input = "";
-			continue;
-		}
-
-		if (input == "r") {
-			std::cout << "Simulation play required." << std::endl;
-			simulationManager.playSimulation();
-			input = "";
-			continue;
-		}
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-	}
-		*/
 }

@@ -371,6 +371,7 @@
      <string>Menu</string>
     </property>
     <addaction name="actionWorld_Viewer"/>
+    <addaction name="actionDiagnostics_Window"/>
    </widget>
    <addaction name="menuMenu"/>
   </widget>
@@ -384,6 +385,14 @@
    </property>
    <property name="text">
     <string>World Viewer</string>
+   </property>
+  </action>
+  <action name="actionDiagnostics_Window">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Diagnostics Window</string>
    </property>
   </action>
  </widget>

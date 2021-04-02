@@ -7,9 +7,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class SuperCarMain_GUI; }
 QT_END_NAMESPACE
 
-// The following declaration is a workaround to avoid #include "WorldViewer_Manager.h", that causes a problem because of glad.h
+// The following declarations are workarounds to avoid #include "WorldViewer_Manager.h" and #include "DiagnosticsWindow.h", that cause a problem because of glad.h
 class WorldViewerManager;
-
+class DiagnosticsWindow;
 
 class SuperCarMain_GUI : public QMainWindow
 {
@@ -23,6 +23,7 @@ private:
     Ui::SuperCarMain_GUI*ui;
     simulation::SimulationManager* simulationManager;
     WorldViewerManager* viewerManager;
+    DiagnosticsWindow* diagnosticsWindow;
     const std::vector<std::string> getElementsList();
 
 
@@ -37,6 +38,7 @@ private slots:
 
     void simulationCycleTimeChanged(int newTime);
 
+    void showDiagnosticsToggled(bool value);
     void showViewerToggled(bool value);
 
 };

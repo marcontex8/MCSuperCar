@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "WorldViewer_Manager.h"
+#include "DiagnosticsWindow.h"
 
 extern Diagnostics diagnostics;
 
@@ -38,14 +39,18 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationMana
     //Cycle Time
     connect(ui->cycleTime, QOverload<int>::of(&QSpinBox::valueChanged), this, &SuperCarMain_GUI::simulationCycleTimeChanged);
 
-    // menu show wlrld viewer toggle
+    // menu show world viewer toggle
     connect(ui->actionWorld_Viewer, &QAction::toggled, this, &SuperCarMain_GUI::showViewerToggled);
 
+    connect(ui->actionDiagnostics_Window, &QAction::toggled, this, &SuperCarMain_GUI::showDiagnosticsToggled);
+
+    
 }
 
 SuperCarMain_GUI::~SuperCarMain_GUI()
 {
     diagnostics.log("SuperCarMain_GUI destructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+    if(diagnosticsWindow) delete diagnosticsWindow;
     delete ui;
 }
 
@@ -149,6 +154,19 @@ void SuperCarMain_GUI::simulationCycleTimeChanged(int newTime) {
 }
 
 
+void SuperCarMain_GUI::showDiagnosticsToggled(bool value) {
+    if (value) {
+        diagnosticsWindow = new DiagnosticsWindow(&diagnostics);
+        diagnosticsWindow->move(this->width() + 10, 0);
+        diagnosticsWindow->show();
+    }
+    else
+    {
+        if (diagnosticsWindow) {
+            delete diagnosticsWindow;
+        }
+    }
+}
 
 
 void SuperCarMain_GUI::showViewerToggled(bool value) {
