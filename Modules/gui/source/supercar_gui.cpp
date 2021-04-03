@@ -13,6 +13,7 @@ extern Diagnostics diagnostics;
 SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget* parent) :
     simulationManager(simulationManager),
     viewerManager(viewerManager),
+    diagnosticsWindow(nullptr),
     QMainWindow(parent),
     ui(new Ui::SuperCarMain_GUI)
 {
@@ -47,10 +48,25 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationMana
     
 }
 
+
+void SuperCarMain_GUI::closeEvent(QCloseEvent* event)
+{
+    QMessageBox::StandardButton resBtn = QMessageBox::question(this, "Closing SuperCar",
+        tr("Are you sure you want to exit?\n"),
+        QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+        QMessageBox::Yes);
+    if (resBtn != QMessageBox::Yes) {
+        event->ignore();
+    }
+    else {
+        event->accept();
+        diagnosticsWindow->close();
+    }
+}
+
 SuperCarMain_GUI::~SuperCarMain_GUI()
 {
     diagnostics.log("SuperCarMain_GUI destructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
-    if(diagnosticsWindow) delete diagnosticsWindow;
     delete ui;
 }
 
@@ -163,7 +179,9 @@ void SuperCarMain_GUI::showDiagnosticsToggled(bool value) {
     else
     {
         if (diagnosticsWindow) {
+            diagnosticsWindow->close();
             delete diagnosticsWindow;
+            diagnosticsWindow = nullptr;
         }
     }
 }

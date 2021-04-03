@@ -2,6 +2,9 @@
 #define SUPERCAR_GUI_H
 
 #include <QMainWindow>
+#include <QCloseEvent>
+
+
 #include "SimulationManager.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class SuperCarMain_GUI; }
@@ -25,6 +28,8 @@ private:
     WorldViewerManager* viewerManager;
     DiagnosticsWindow* diagnosticsWindow;
     const std::vector<std::string> getElementsList();
+    void closeEvent(QCloseEvent* event);
+
 
 
 private slots:
