@@ -71,8 +71,8 @@ void WorldViewer::runView() {
         std::this_thread::sleep_for(10ms);
         
         const float radius = 10.0f;
-        float camX = sin(glfwGetTime()/10) * radius;
-        float camY = cos(glfwGetTime()/10) * radius;
+        double camX = sin(glfwGetTime()/10) * radius;
+        double camY = cos(glfwGetTime()/10) * radius;
         scene.setCameraPosition(glm::vec3(camX, camY, 10.0f));
 
         int errorCode = glfwGetError(nullptr);
@@ -162,7 +162,6 @@ void WorldViewer::runView() {
         );
         diagnostics.monitor("elementsDrawer.size(): ", std::to_string(elementsDrawer.size()));
 
-        elementsDrawer.size();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

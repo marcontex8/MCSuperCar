@@ -43,7 +43,7 @@ void CarPack001Drawer::draw(glm::vec3 position, glm::quat orientation, Scene& sc
 		glUniform1f(element.mat_opacityLocation, element.mat_opacity);
 		glUniform1f(element.mat_shininessLocation, element.mat_shininess);
 
-		glDrawElements(GL_TRIANGLES, element.indicesNumber, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, (GLsizei) element.indicesNumber, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 }

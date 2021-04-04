@@ -1,5 +1,5 @@
-#include "supercar_gui.h"
-#include "ui_supercar_gui.h"
+#include "SuperCarWindow.h"
+#include "ui_SuperCarWindow.h"
 
 #include "Diagnostics.h"
 
@@ -10,14 +10,14 @@
 extern Diagnostics diagnostics;
 
 
-SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget* parent) :
+SuperCarWindow::SuperCarWindow(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget* parent) :
     simulationManager(simulationManager),
     viewerManager(viewerManager),
     diagnosticsWindow(nullptr),
     QMainWindow(parent),
-    ui(new Ui::SuperCarMain_GUI)
+    ui(new Ui::SuperCarWindow)
 {
-    diagnostics.log("SuperCarMain_GUI constructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+    diagnostics.log("SuperCarWindow constructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     ui->setupUi(this);
     
     ui->begin->setEnabled(true);
@@ -27,29 +27,29 @@ SuperCarMain_GUI::SuperCarMain_GUI(simulation::SimulationManager* simulationMana
     ui->cycleTime->setEnabled(true);
 
     //Begin - End
-    connect(ui->begin,  &QPushButton::clicked, this, &SuperCarMain_GUI::simulationBegin);
-    connect(ui->end,    &QPushButton::clicked, this, &SuperCarMain_GUI::simulationEnd);
+    connect(ui->begin,  &QPushButton::clicked, this, &SuperCarWindow::simulationBegin);
+    connect(ui->end,    &QPushButton::clicked, this, &SuperCarWindow::simulationEnd);
 
     //Play - Pause
-    connect(ui->play,   &QPushButton::clicked, this, &SuperCarMain_GUI::simulationPlay);
-    connect(ui->pause,  &QPushButton::clicked, this, &SuperCarMain_GUI::simulationPause);
+    connect(ui->play,   &QPushButton::clicked, this, &SuperCarWindow::simulationPlay);
+    connect(ui->pause,  &QPushButton::clicked, this, &SuperCarWindow::simulationPause);
 
     //Add
-    connect(ui->add, &QPushButton::clicked, this, &SuperCarMain_GUI::simulationAddElement);
+    connect(ui->add, &QPushButton::clicked, this, &SuperCarWindow::simulationAddElement);
 
     //Cycle Time
-    connect(ui->cycleTime, QOverload<int>::of(&QSpinBox::valueChanged), this, &SuperCarMain_GUI::simulationCycleTimeChanged);
+    connect(ui->cycleTime, QOverload<int>::of(&QSpinBox::valueChanged), this, &SuperCarWindow::simulationCycleTimeChanged);
 
     // menu show world viewer toggle
-    connect(ui->actionWorld_Viewer, &QAction::toggled, this, &SuperCarMain_GUI::showViewerToggled);
+    connect(ui->actionWorld_Viewer, &QAction::toggled, this, &SuperCarWindow::showViewerToggled);
 
-    connect(ui->actionDiagnostics_Window, &QAction::toggled, this, &SuperCarMain_GUI::showDiagnosticsToggled);
+    connect(ui->actionDiagnostics_Window, &QAction::toggled, this, &SuperCarWindow::showDiagnosticsToggled);
 
     
 }
 
 
-void SuperCarMain_GUI::closeEvent(QCloseEvent* event)
+void SuperCarWindow::closeEvent(QCloseEvent* event)
 {
     QMessageBox::StandardButton resBtn = QMessageBox::question(this, "Closing SuperCar",
         tr("Are you sure you want to exit?\n"),
@@ -64,14 +64,14 @@ void SuperCarMain_GUI::closeEvent(QCloseEvent* event)
     }
 }
 
-SuperCarMain_GUI::~SuperCarMain_GUI()
+SuperCarWindow::~SuperCarWindow()
 {
-    diagnostics.log("SuperCarMain_GUI destructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+    diagnostics.log("SuperCarWindow destructor called", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     delete ui;
 }
 
 
-void SuperCarMain_GUI::simulationBegin() {
+void SuperCarWindow::simulationBegin() {
     diagnostics.log("call to simulationBegin()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
     this->simulationManager->beginSimulation();
@@ -85,7 +85,7 @@ void SuperCarMain_GUI::simulationBegin() {
     ui->cycleTime->setEnabled(false);
 }
 
-void SuperCarMain_GUI::simulationEnd() {
+void SuperCarWindow::simulationEnd() {
     diagnostics.log("Call to simulationEnd()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
     this->simulationManager->endSimulation();
@@ -99,7 +99,7 @@ void SuperCarMain_GUI::simulationEnd() {
     ui->cycleTime->setEnabled(true);
 }
 
-void SuperCarMain_GUI::simulationPlay() {
+void SuperCarWindow::simulationPlay() {
     diagnostics.log("Call to simulationPlay()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
     this->simulationManager->playSimulation();
@@ -108,7 +108,7 @@ void SuperCarMain_GUI::simulationPlay() {
     ui->pause->setEnabled(true);
 }
 
-void SuperCarMain_GUI::simulationPause() {
+void SuperCarWindow::simulationPause() {
     diagnostics.log("Call to simulationPause()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
     this->simulationManager->pauseSimulation();
@@ -117,7 +117,7 @@ void SuperCarMain_GUI::simulationPause() {
     ui->pause->setEnabled(true);
 }
 
-void SuperCarMain_GUI::simulationAddElement() {
+void SuperCarWindow::simulationAddElement() {
     diagnostics.log("Call to simulationAddElement()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     static int id = 0;
     std::string type = this->ui->cb_newElementType->currentText().toStdString();
@@ -161,7 +161,7 @@ void SuperCarMain_GUI::simulationAddElement() {
 
 
 
-void SuperCarMain_GUI::simulationCycleTimeChanged(int newTime) {
+void SuperCarWindow::simulationCycleTimeChanged(int newTime) {
     diagnostics.log("Call to simulationCycleTimeChanged()", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
     if (newTime > 0 && newTime < 1000) {
         this->simulationManager->simulationController.setSimulationIntervalMillis(newTime);
@@ -170,7 +170,7 @@ void SuperCarMain_GUI::simulationCycleTimeChanged(int newTime) {
 }
 
 
-void SuperCarMain_GUI::showDiagnosticsToggled(bool value) {
+void SuperCarWindow::showDiagnosticsToggled(bool value) {
     if (value) {
         diagnosticsWindow = new DiagnosticsWindow(&diagnostics);
         diagnosticsWindow->move(this->width() + 10, 0);
@@ -187,7 +187,7 @@ void SuperCarMain_GUI::showDiagnosticsToggled(bool value) {
 }
 
 
-void SuperCarMain_GUI::showViewerToggled(bool value) {
+void SuperCarWindow::showViewerToggled(bool value) {
     if (value) {
         viewerManager->initializeWorldView();
     }

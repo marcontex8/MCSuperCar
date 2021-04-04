@@ -1,5 +1,5 @@
-#ifndef SUPERCAR_GUI_H
-#define SUPERCAR_GUI_H
+#ifndef SUPERCARWINDOW_H
+#define SUPERCARWINDOW_H
 
 #include <QMainWindow>
 #include <QCloseEvent>
@@ -7,23 +7,23 @@
 
 #include "SimulationManager.h"
 QT_BEGIN_NAMESPACE
-namespace Ui { class SuperCarMain_GUI; }
+namespace Ui { class SuperCarWindow; }
 QT_END_NAMESPACE
 
 // The following declarations are workarounds to avoid #include "WorldViewer_Manager.h" and #include "DiagnosticsWindow.h", that cause a problem because of glad.h
 class WorldViewerManager;
 class DiagnosticsWindow;
 
-class SuperCarMain_GUI : public QMainWindow
+class SuperCarWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    SuperCarMain_GUI(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget *parent = nullptr);
-    ~SuperCarMain_GUI();
+    SuperCarWindow(simulation::SimulationManager* simulationManager, WorldViewerManager* viewerManager, QWidget *parent = nullptr);
+    ~SuperCarWindow();
 
 private:
-    Ui::SuperCarMain_GUI*ui;
+    Ui::SuperCarWindow*ui;
     simulation::SimulationManager* simulationManager;
     WorldViewerManager* viewerManager;
     DiagnosticsWindow* diagnosticsWindow;
@@ -47,4 +47,4 @@ private slots:
     void showViewerToggled(bool value);
 
 };
-#endif // SUPERCAR_GUI_H
+#endif // SUPERCARWINDOW_H

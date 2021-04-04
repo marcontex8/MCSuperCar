@@ -20,9 +20,9 @@ set_target_properties(Qt5::Core PROPERTIES MAP_IMPORTED_CONFIG_COVERAGE "DEBUG")
 
 set(PROJECT_SOURCES
         "${MCSC_MODULE_GUI_SOURCE}/main.cpp"
-        "${MCSC_MODULE_GUI_SOURCE}/supercar_gui.cpp"
-        "${MCSC_MODULE_GUI_INCLUDE}/supercar_gui.h"
-        "${MCSC_MODULE_GUI_UI}/supercar_gui.ui"
+        "${MCSC_MODULE_GUI_SOURCE}/SuperCarWindow.cpp"
+        "${MCSC_MODULE_GUI_INCLUDE}/SuperCarWindow.h"
+        "${MCSC_MODULE_GUI_UI}/SuperCarWindow.ui"
 
         "${MCSC_MODULE_GUI_SOURCE}/DiagnosticsWindow.cpp"
         "${MCSC_MODULE_GUI_INCLUDE}/DiagnosticsWindow.h"

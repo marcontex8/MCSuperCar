@@ -6,40 +6,40 @@
 #include <vector>
 class CarElement {
 public:
-	unsigned int shaderProgram;
-	unsigned int VAO;
+	unsigned int shaderProgram = 0;
+	unsigned int VAO = 0;
 
 	//uniforms locations
-	unsigned int modelLocation;
-	unsigned int viewLocation;
-	unsigned int projectionLocation;
+	unsigned int modelLocation = 0;
+	unsigned int viewLocation = 0;
+	unsigned int projectionLocation = 0;
 
-	unsigned int mat_diffuseLocation;
-	unsigned int mat_specularLocation;
-	unsigned int mat_shininessLocation;
-	unsigned int mat_opacityLocation;
+	unsigned int mat_diffuseLocation = 0;
+	unsigned int mat_specularLocation = 0;
+	unsigned int mat_shininessLocation = 0;
+	unsigned int mat_opacityLocation = 0;
 
-	unsigned int light_positionLocation;
-	unsigned int light_ambientLocation;
-	unsigned int light_diffuseLocation;
-	unsigned int light_specularLocation;
+	unsigned int light_positionLocation = 0;
+	unsigned int light_ambientLocation = 0;
+	unsigned int light_diffuseLocation = 0;
+	unsigned int light_specularLocation = 0;
 
-	unsigned int viewPosLocation;
+	unsigned int viewPosLocation = 0;
 
 	// textures
-	unsigned int texture_diffuse;
-	unsigned int texture_specular;
+	unsigned int texture_diffuse = 0;
+	unsigned int texture_specular = 0;
 
 	// light data
-	glm::vec3 light_ambient;
-	glm::vec3 light_diffuse;
-	glm::vec3 light_specular;
+	glm::vec3 light_ambient = {0.0f, 0.0f, 0.0f};
+	glm::vec3 light_diffuse = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 light_specular = { 0.0f, 0.0f, 0.0f };
 	
 	// material data
-	float mat_opacity;
-	float mat_shininess;
+	float mat_opacity = 0;
+	float mat_shininess = 0;
 
-	size_t indicesNumber;
+	size_t indicesNumber = 0;
 	CarElement() {};
 };
 

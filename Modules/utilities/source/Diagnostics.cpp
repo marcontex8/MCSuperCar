@@ -71,7 +71,7 @@ void Diagnostics::openFileStream() {
 	std::string string_time(30, '\0');
 	std::strftime(&string_time[0], string_time.size(), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
 
-	char nameFile_time[20];
+	char nameFile_time[20] = "";
 	std::strftime(&nameFile_time[0], 20, "%Y%m%d_%H%M_%S", std::localtime(&now));
 	std::string str_nameFile_time(nameFile_time);
 	std::string logFile = logFolder + "log_" + str_nameFile_time +".csv";

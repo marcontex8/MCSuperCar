@@ -1,7 +1,7 @@
 #include <QApplication>
 
 
-#include "supercar_gui.h"
+#include "SuperCarWindow.h"
 #include "Diagnostics.h"
 #include "SimulationManager.h"
 #include "WorldViewer_Manager.h"
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	// INITIALIZING GUI
 	QApplication a(argc, argv);
 	
-	SuperCarMain_GUI mainWindow(&simulationManager, &viewerManager);
+	SuperCarWindow mainWindow(&simulationManager, &viewerManager);
 	mainWindow.move(0, 0);
 	mainWindow.show();
 

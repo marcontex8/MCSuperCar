@@ -85,7 +85,7 @@ void CarPack001Factory::processMaterial(aiMaterial* material, CarElement& elemen
 
 
     if (SPECIAL_DEBUG_LOGS == true) {
-        for (int i = 0; i < material->mNumProperties; i++) {
+        for (unsigned int i = 0; i < material->mNumProperties; i++) {
             std::string key = material->mProperties[i]->mKey.C_Str();
             diagnostics.log("Material property " + std::to_string(i) + " key: " + key, Diagnostics::Topic::Viewer);
         }
@@ -218,9 +218,10 @@ CarElement CarPack001Factory::processMesh(aiMesh* mesh, const aiScene* scene, Ca
         }
         // texture coordinates
         if (mesh->mTextureCoords[0]) {
-            glm::vec2 vec;
-            vec.x = mesh->mTextureCoords[0][i].x;
-            vec.y = mesh->mTextureCoords[0][i].y;
+            glm::vec2 vec{
+            vec.x = mesh->mTextureCoords[0][i].x,
+            vec.y = mesh->mTextureCoords[0][i].y
+            };
             vertex.TexCoords = vec;
         }
         vertices.push_back(vertex);
@@ -277,14 +278,17 @@ unsigned int CarPack001Factory::loadTexture(std::string const& path) {
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format = GL_RGB;
         if (nrChannels == 1)
             format = GL_RED;
         else if (nrChannels == 3)
             format = GL_RGB;
         else if (nrChannels == 4)
             format = GL_RGBA;
-
+        else {
+            diagnostics.log("Number of channels of texture not supported. Please use 1, 3 or 4 channels image.", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Error);
+            throw std::exception();
+        }
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
