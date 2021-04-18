@@ -11,9 +11,9 @@ namespace simulation {
 	class SimulationElement {
 	protected:
 		Eigen::Vector3d position;
-		Eigen::Vector3d velocity;
 		Eigen::Quaterniond orientation;
 		mutable std::shared_mutex dataMutex;
+		unsigned long simulationTime;
 
 	public:
 		const std::string name;
@@ -36,6 +36,10 @@ namespace simulation {
 
 		Eigen::Quaterniond getOrientation() const;
 		void setOrientation(const Eigen::Quaterniond& orientation);
+
+		void setTime(unsigned long time);
+
+		virtual void update(unsigned long newTime);
 
 		virtual ~SimulationElement();
 	};

@@ -9,14 +9,11 @@ namespace simulation {
 	class SimulationController
 	{
 	private:
-		int simulationInterval = 20;
-		bool pauseRequired	= true;
-		bool stopRequired	= true;
-		bool pause	= true;
-		bool stop	= true;
-
-
-		std::mutex dataMutex;
+		std::atomic<int> simulationInterval = 20;
+		std::atomic<bool> pauseRequired	= true;
+		std::atomic<bool> stopRequired	= true;
+		std::atomic<bool> pause	= true;
+		std::atomic<bool> stop	= true;
 
 
 	public:

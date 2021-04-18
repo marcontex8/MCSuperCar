@@ -13,21 +13,18 @@ int main(int argc, char *argv[])
 {
 	std::locale::global(std::locale(""));
 	std::cout << "main.cpp: started" << std::endl;
+	diagnostics.log("main.cpp: started", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
+
 	//INITIALIZING SIMULATOR
-
-	diagnostics.log("iniziato!!!", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-
 	simulation::SimulatedWorld world;
+	diagnostics.log("Created Simulated World", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 	simulation::SimulationManager simulationManager(&world);
-	std::cout << "created manager" << std::endl;
-
-	simulationManager.simulationController.setSimulationIntervalMillis(20);
-	std::cout << "set interval" << std::endl;
-
+	diagnostics.log("Created Simulation Manager", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
 
 	//INITIALIZING WORLD VIEWER
 	WorldViewerManager viewerManager(&world);
+	diagnostics.log("Created Viewer Manager", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 	viewerManager.initializeWorldView();
 
 	// INITIALIZING GUI

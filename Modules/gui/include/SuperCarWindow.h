@@ -46,5 +46,7 @@ private slots:
     void showDiagnosticsToggled(bool value);
     void showViewerToggled(bool value);
 
+    void updateInputCommands();
+
 };
 #endif // SUPERCARWINDOW_H

@@ -66,6 +66,16 @@ void SimulationElement::setOrientation(const Eigen::Quaterniond& orientation) {
 	this->orientation = orientation;
 }
 
+void SimulationElement::setTime(unsigned long time) {
+	this->simulationTime = time;
+}
+
+
+void SimulationElement::update(unsigned long newTime) {
+	// generic element does nothing. Only sets new time.
+	this->simulationTime = newTime;
+}
+
 SimulationElement::~SimulationElement() {
 
 }

@@ -61,7 +61,7 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 		}
 		diagnostics.monitor("status", "\tRUNNING");
 		auto start = std::chrono::high_resolution_clock::now();
-		world->applyToElements(simulatePhysic);
+		world->performTimeStep(controller->getSimulationIntervalMillis());
 
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto delay = std::chrono::milliseconds(controller->getSimulationIntervalMillis()) - (stop - start);
@@ -80,21 +80,3 @@ void SimulationManager::simulate(SimulatedWorld* world, SimulationController* co
 		std::this_thread::sleep_for(delay);
 	}
 }
-
-void SimulationManager::simulatePhysic(SimulationElement* element){
-	int milliseconds = 20;
-	element->setPosition(
-		element->getPosition()[0] + (double)milliseconds / 10000 * cos((double)element->id / 5 * 2 * 3.14),
-		element->getPosition()[1] + (double)milliseconds / 1000 * sin((double)element->id / 5 * 2 * 3.14),
-		element->getPosition()[2]);
-	/*
-	simulationLogger->log("Element in (" +
-		std::to_string(element.x) +
-		", " +
-		std::to_string(element.y) +
-		", " +
-		std::to_string(element.x) +
-		")");
-		*/
-}
-

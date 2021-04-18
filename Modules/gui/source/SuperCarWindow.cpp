@@ -45,9 +45,26 @@ SuperCarWindow::SuperCarWindow(simulation::SimulationManager* simulationManager,
 
     connect(ui->actionDiagnostics_Window, &QAction::toggled, this, &SuperCarWindow::showDiagnosticsToggled);
 
-    
+    int simulationInterval = simulationManager->simulationController.getSimulationIntervalMillis();
+    ui->cycleTime->setValue(simulationInterval);
+
+    QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, QOverload<>::of(&SuperCarWindow::updateInputCommands));
+    timer->start(simulationInterval);
 }
 
+
+void SuperCarWindow::updateInputCommands() {
+    int elementIndex = ui->sb_controls_id->value();
+    if (elementIndex <= 0) return;
+    simulation::SimulationElement* element = this->simulationManager->simulatedWorld->getElementAtIndex(elementIndex);
+    if (element == nullptr) return;
+    if (typeid(*element) == typeid(simulation::SimulationElement_Car)) {
+        simulation::SimulationElement_Car* element_casted = dynamic_cast<simulation::SimulationElement_Car*>(element);
+        element_casted->setAcceleratorPedal(static_cast<double>(ui->vs_accelerator->value())/1000);
+        element_casted->setSteering(static_cast<double>(ui->hs_steering->value())/1000);
+    }
+}
 
 void SuperCarWindow::closeEvent(QCloseEvent* event)
 {

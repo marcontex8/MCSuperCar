@@ -14,6 +14,7 @@ namespace simulation {
 	private:
 		std::vector<SimulationElement*> elements;
 		mutable std::shared_mutex elementsVectorMutex;
+		unsigned long simulationTime = 0;
 	public:
 		int addElement(SimulationElement&& element);
 		int numberOfElements() const;
@@ -26,6 +27,8 @@ namespace simulation {
 				elaboration(*it);
 			}
 		}
+
+		void performTimeStep(unsigned int timeStep);
 	};
 }
 

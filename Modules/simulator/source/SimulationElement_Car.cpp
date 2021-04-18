@@ -9,13 +9,13 @@ namespace simulation {
 		SimulationElement(id, "Car",Eigen::Vector3d(0, 0, 0), Eigen::Quaterniond(1,0,0,0), 1000),
 		model(model),
 		steering(0.0f),
-		acceleration(0.0f)
+		acceleratorPedal(0.0f)
 	{
 		diagnostics.log("Created SimulationElement_Car");
 	}
 
 
-	void SimulationElement_Car::setSteering(float value) {
+	void SimulationElement_Car::setSteering(double value) {
 		if (value < -1) {
 			value = -1;
 		}
@@ -24,15 +24,43 @@ namespace simulation {
 		}
 		this->steering = value;
 	}
-	void SimulationElement_Car::setAcceleration(float value) {
+	void SimulationElement_Car::setAcceleratorPedal(double value) {
 		if (value < -1) {
 			value = -1;
 		}
 		if (value > 1) {
 			value = 1;
 		}
-		this->acceleration = value;
+		this->acceleratorPedal = value;
 	}
 
+	void SimulationElement_Car::update(unsigned long newTime) {
+		double delta = (static_cast<double>(newTime) - static_cast<double>(this->simulationTime))/1000;
+		this->simulationTime = newTime;
+		diagnostics.monitor("delta", std::to_string(delta));
+
+		// generate physical inputs according to UI inputs and car physical model
+		double accelerationModule = maxAcceleration * acceleratorPedal;
+		double steeringAngle = maxSeeringAngleDeg * steering /360 * 2 * 3.14;
+
+		diagnostics.monitor(std::string("accelerationModule ") + std::to_string(this->id), std::to_string(accelerationModule));
+		diagnostics.monitor(std::string("steeringAngle ")      + std::to_string(this->id), std::to_string(steeringAngle));
+
+		double velocityModule = sqrt(pow(velocityX, 2) + pow(velocityY, 2));
+		velocityX = (velocityModule + accelerationModule * delta) * sin(alpha + steeringAngle);
+		velocityY = (velocityModule + accelerationModule * delta) * cos(alpha + steeringAngle);
+		alpha	  += velocityModule / interaxisLenght * sin(steeringAngle) * delta;
+
+		positionX += velocityX * delta;
+		positionY += velocityY * delta;
+
+		diagnostics.monitor(std::string("velocityX ") + std::to_string(this->id), std::to_string(velocityX));
+		diagnostics.monitor(std::string("velocityY ") + std::to_string(this->id), std::to_string(velocityY));
+		diagnostics.monitor(std::string("alpha ")     + std::to_string(this->id), std::to_string(alpha));
+
+
+		setPosition(positionX, positionY, 0.0);
+		setOrientation(Eigen::Quaterniond(Eigen::AngleAxisd(alpha + 3.14, Eigen::Vector3d(0.0, 0.0, -1.0) ) ) );
+	}
 
 }
