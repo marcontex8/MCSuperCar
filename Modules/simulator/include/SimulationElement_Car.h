@@ -2,6 +2,7 @@
 #define SIMULATIONELEMENTCAR_H
 
 #include "SimulationElement.h"
+#include <map>
 
 namespace simulation {
 	enum class CarModels {
@@ -9,6 +10,12 @@ namespace simulation {
 		Minivan,
 		Sport,
 		SUV
+	};
+
+	struct CarProperties {
+		double interaxisLenght;
+		double maxAcceleration;
+		double maxSeeringAngleDeg;
 	};
 
 	class SimulationElement_Car : public SimulationElement {
@@ -19,9 +26,9 @@ namespace simulation {
 		const CarModels model;
 		void update(unsigned long newTime);
 		
-		const double interaxisLenght = 3.0;
-		const double maxSeeringAngleDeg = 45;
-		const double maxAcceleration = 2.7;
+		const double interaxisLenght;
+		const double maxAcceleration;
+		const double maxSeeringAngleDeg;
 	private:
 		// Inputs of the model
 		double steering = 0;

@@ -4,12 +4,22 @@
 extern Diagnostics diagnostics;
 
 namespace simulation {
+	std::map<CarModels, CarProperties> carProperties = {
+		std::pair{CarModels::Hatchback, CarProperties{3.0, 2.4, 40} },
+		std::pair{CarModels::Minivan,	CarProperties{4.7, 2.7, 45} },
+		std::pair{CarModels::Sport,		CarProperties{4.0, 7.0, 30} },
+		std::pair{CarModels::SUV,		CarProperties{4.5, 4.0, 60} }
+	};
+
 
 	SimulationElement_Car::SimulationElement_Car(int id, CarModels model) :
 		SimulationElement(id, "Car",Eigen::Vector3d(0, 0, 0), Eigen::Quaterniond(1,0,0,0), 1000),
 		model(model),
 		steering(0.0f),
-		acceleratorPedal(0.0f)
+		acceleratorPedal(0.0f),
+		interaxisLenght(carProperties[model].interaxisLenght),
+		maxAcceleration(carProperties[model].maxAcceleration),
+		maxSeeringAngleDeg(carProperties[model].maxSeeringAngleDeg)
 	{
 		diagnostics.log("Created SimulationElement_Car");
 	}
