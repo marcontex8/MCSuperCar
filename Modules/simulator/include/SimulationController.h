@@ -17,6 +17,8 @@ namespace simulation {
 
 
 	public:
+		SimulationController() = default;
+
 		int setSimulationIntervalMillis(int interval);
 		int getSimulationIntervalMillis();
 

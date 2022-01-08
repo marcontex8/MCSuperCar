@@ -5,7 +5,7 @@ using namespace simulation;
 SimulationElement::SimulationElement() :
 	id(0),
 	name("NewElement"),
-	position(Eigen::Vector3d()),
+	position(Eigen::Vector3d(0.0, 0.0, 0.0)),
 	orientation(Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0)),
 	mass(1)
 {

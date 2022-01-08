@@ -19,6 +19,9 @@ message(STATUS "MCSC | modules dir: ${MCSC_MODULES_DIR}")
 set(MCSC_EXTERNAL_DIR "${PROJECT_SOURCE_DIR}/External")
 message(STATUS "MCSC | external dir: ${MCSC_EXTERNAL_DIR}")
 
+#Define Tests Directory
+set(MCSC_TESTS_DIR "${PROJECT_SOURCE_DIR}/Tests")
+message(STATUS "MCSC | tests dir: ${MCSC_TESTS_DIR}")
 
 
 # ADD EXTERNAL CODE
@@ -40,10 +43,15 @@ include_directories("${MCSC_EXTERNAL_DIR}/glm")
 # eigen
 include_directories("${MCSC_EXTERNAL_DIR}/eigen")
 
-
+# assimp
 add_subdirectory("${MCSC_EXTERNAL_DIR}/assimp")
-#find_package(assimp   REQUIRED)
+
+# gtests
+add_subdirectory("${MCSC_EXTERNAL_DIR}/gtests/")
 
 
 # ADD MODULES DIRECTORIES
 add_subdirectory (${MCSC_MODULES_DIR})
+
+
+
