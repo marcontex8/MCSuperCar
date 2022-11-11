@@ -4,8 +4,9 @@
 #include "Diagnostics.h"
 
 extern Diagnostics diagnostics;
+;
 
-WorldViewerManager::WorldViewerManager(simulation::SimulatedWorld* world):world(world) {
+WorldViewerManager::WorldViewerManager(std::shared_ptr<simulation::SimulatedWorld>& world):world(world) {
 	int initResult = glfwInit();
 	//initialize window
 	if (initResult == GLFW_FALSE) {
