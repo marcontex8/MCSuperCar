@@ -28,7 +28,7 @@
 
 extern Diagnostics diagnostics;
 
-WorldViewer::WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world): terminationFlag(terminationFlag), world(world), window(nullptr) {
+WorldViewer::WorldViewer(std::atomic<bool>* terminationFlag, std::shared_ptr<simulation::SimulatedWorld>& world): terminationFlag(terminationFlag), world(world), window(nullptr) {
     diagnostics.log("WorldViewer | constructor called", Diagnostics::Topic::Viewer, Diagnostics::Verbosity::Debug);
 }
 

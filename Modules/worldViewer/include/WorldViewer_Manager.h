@@ -11,11 +11,11 @@
 
 class WorldViewerManager {
 private:
-	simulation::SimulatedWorld* world;
+	std::shared_ptr<simulation::SimulatedWorld> world;
 public:
 	std::atomic<bool> terminationFlag = false;
 	std::future<bool> terminationResult;
-	WorldViewerManager(simulation::SimulatedWorld* world);
+	WorldViewerManager(std::shared_ptr<simulation::SimulatedWorld>& simulatedWorld);
 	~WorldViewerManager();
 	void initializeWorldView();
 	void terminateWorldView();

@@ -16,14 +16,14 @@ int main(int argc, char *argv[])
 	diagnostics.log("main.cpp: started", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
 	//INITIALIZING SIMULATOR
-	simulation::SimulatedWorld world;
+	auto world = std::make_shared<simulation::SimulatedWorld>();
 	diagnostics.log("Created Simulated World", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
-	simulation::SimulationManager simulationManager(&world);
+	simulation::SimulationManager simulationManager(world);
 	diagnostics.log("Created Simulation Manager", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 
 
 	//INITIALIZING WORLD VIEWER
-	WorldViewerManager viewerManager(&world);
+	WorldViewerManager viewerManager(world);
 	diagnostics.log("Created Viewer Manager", Diagnostics::Topic::Gui, Diagnostics::Verbosity::Debug);
 	viewerManager.initializeWorldView();
 
