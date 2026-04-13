@@ -2,6 +2,7 @@
 #include <cmath>
 #include <type_traits>
 #include <cstdint>
+#include <filesystem>
 
 Diagnostics::Diagnostics() : initial_time( std::chrono::steady_clock::now() )
 {
@@ -65,6 +66,9 @@ Diagnostics::~Diagnostics()
 
 void Diagnostics::openFileStream() {
 	std::lock_guard<std::mutex> lk(logMutex);
+
+	std::error_code ec;
+	std::filesystem::create_directories(logFolder, ec);
 
 	// get current system clock time
 	std::time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());

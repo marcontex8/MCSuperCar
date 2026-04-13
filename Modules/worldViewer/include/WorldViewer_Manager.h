@@ -2,7 +2,7 @@
 #define VIEWERMANAGER_H
 
 #include "SimulatedWorld.h"
-#include "worldViewer.h"
+#include "WorldViewer.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"

@@ -8,8 +8,8 @@
 
 class Textures {
 public:
-	const char* boxTexturePath = R"(D:\WorkSpace\MCSuperCar\Modules\worldViewer\graphic\container.jpg)";
-	const char* simpleScenarioTexturePath = R"(D:\WorkSpace\MCSuperCar\Modules\worldViewer\graphic\asphalt.jpg)";
+	const char* boxTexturePath = "Modules/worldViewer/graphic/container.jpg";
+	const char* simpleScenarioTexturePath = "Modules/worldViewer/graphic/container.jpg";
 
 	static unsigned int generateTexture(const char* texturePath);
 };
@@ -72,9 +72,9 @@ public:
 		-1.0f, -1.0f, 0.0f
 	};
 
-	static void Vertices::setUpTexturedVertices(const float* verticesArray, const size_t size, unsigned int& VBO, unsigned int& VAO);
+	static void setUpTexturedVertices(const float* verticesArray, const size_t size, unsigned int& VBO, unsigned int& VAO);
 
-	static void Vertices::setUpVertices(const float* verticesArray, const size_t size, unsigned int& VAO);
+	static void setUpVertices(const float* verticesArray, const size_t size, unsigned int& VAO);
 
 };
 

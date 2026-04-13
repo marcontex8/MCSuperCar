@@ -40,5 +40,5 @@ bool SimulationController::getPause() {
 };
 
 bool SimulationController::getStop() {
-	return pause;
+	return stop;
 };

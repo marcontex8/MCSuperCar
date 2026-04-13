@@ -1,4 +1,4 @@
-#include "worldViewer.h"
+#include "WorldViewer.h"
 
 #include <string>
 #include <fstream>

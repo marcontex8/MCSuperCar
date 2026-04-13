@@ -65,7 +65,7 @@ private:
 	std::string topic_toString(Topic topic);
 	std::string verbosity_toString(Verbosity verbosity);
 	std::string logger_time_to_string(diagnostics_time time);
-	std::string logFolder = R"(D:\WorkSpace\MCSuperCar\logs\)";
+	std::string logFolder = "logs/";
 
 	// Input log queue
 	std::mutex logMutex;

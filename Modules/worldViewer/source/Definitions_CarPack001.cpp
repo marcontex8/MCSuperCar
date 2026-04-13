@@ -5,8 +5,8 @@ extern Diagnostics diagnostics;
 
 namespace carPack001{
 
-	const std::string carPack_path = R"(D:\WorkSpace\MCSuperCar\Modules\worldViewer\graphic\CarPack001\)";
-	const std::string opticsTexture_path = R"(D:\WorkSpace\MCSuperCar\Modules\worldViewer\graphic\CarPack001\Textures\Optics.jpg)";
+	const std::string carPack_path = "Modules/worldViewer/graphic/CarPack001";
+	const std::string opticsTexture_path = "Modules/worldViewer/graphic/CarPack001/Textures/Optics.jpg";
 
 
 
@@ -65,8 +65,8 @@ namespace carPack001{
 
 	const Paths getPaths(Model model, Color color) {
 		Paths requiredPaths;
-		std::string texturesPath = carPack_path + "\\Textures\\" + modelsStrings[model] + "\\";
-		requiredPaths.model = carPack_path + "\\Meshes FBX\\" + modelsStrings[model] + ".FBX";
+		std::string texturesPath = carPack_path + "/Textures/" + modelsStrings[model] + "/";
+		requiredPaths.model = carPack_path + "/Meshes FBX/" + modelsStrings[model] + ".FBX";
 		//diagnostics.log("model: " + requiredPaths.model, Diagnostics::Topic::Viewer);
 
 		requiredPaths.bodyDiffuseTexture = texturesPath +

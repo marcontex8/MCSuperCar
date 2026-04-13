@@ -2,6 +2,7 @@
 #define SIMULATIONCONTROLLER_H
 
 #include<mutex>
+#include <atomic>
 #include <condition_variable>
 
 namespace simulation {
