@@ -3,12 +3,12 @@
 > ⚠️ **Legacy codebase notice**
 > This project was originally developed around **2020**. It is a legacy/learning project and parts of the code are intentionally kept as-is, including areas that are not clean by modern production standards.
 
-MCSuperCar is a modular C++ simulation showcase that combines a real-time vehicle simulator, a **3D OpenGL viewer** (main highlight), and a Qt desktop interface into one integrated application.
+MCSuperCar is a modular C++ simulation showcase that combines a vehicle simulator, a **3D OpenGL viewer**, and a Qt desktop interface into one integrated application.
 
 It is designed as an engineering-style sandbox where you can:
 - simulate dynamic world elements (cars and generic objects),
 - render the scene with a custom OpenGL pipeline (mesh import, textures, shaders, camera, transforms),
-- interact through a desktop control panel,
+- interact through a desktop control panel (QT-based),
 - and inspect live diagnostics/log outputs while the simulation is running.
 
 ## Quick visual preview
