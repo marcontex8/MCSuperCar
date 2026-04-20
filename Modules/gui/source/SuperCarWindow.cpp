@@ -77,7 +77,9 @@ void SuperCarWindow::closeEvent(QCloseEvent* event)
     }
     else {
         event->accept();
-        diagnosticsWindow->close();
+        if (diagnosticsWindow) {
+            diagnosticsWindow->close();
+        }
     }
 }
 

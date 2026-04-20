@@ -16,7 +16,7 @@
 
 class WorldViewer {
 private:
-	simulation::SimulatedWorld* world;
+	std::shared_ptr<simulation::SimulatedWorld> world;
 	GLFWwindow* window;
 	std::vector<Drawer*> elementsReferences;
 	std::atomic<bool>* terminationFlag;
@@ -27,7 +27,7 @@ public:
 	class WindowGenerationException : public std::exception {};
 	class GladInitializationException : public std::exception {};
 
-	WorldViewer(std::atomic<bool>* terminationFlag, simulation::SimulatedWorld* world);
+	WorldViewer(std::atomic<bool>* terminationFlag, std::shared_ptr<simulation::SimulatedWorld>& world);
 	~WorldViewer();
 	void runView();
 

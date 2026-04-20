@@ -11,8 +11,9 @@ using namespace simulation;
 
 extern Diagnostics diagnostics;
 
-SimulationManager::SimulationManager(SimulatedWorld* simulatedWorld)
-	:simulatedWorld(simulatedWorld) {};
+SimulationManager::SimulationManager(std::shared_ptr<SimulatedWorld>& simulatedWorld)
+	:simulatedWorld{ simulatedWorld }, simulationController{} {
+};
 
 
 void SimulationManager::beginSimulation() {
@@ -42,9 +43,9 @@ void SimulationManager::pauseSimulation() {
 	}
 };
 
-void SimulationManager::simulate(SimulatedWorld* world, SimulationController* controller){
+void SimulationManager::simulate(std::shared_ptr<SimulatedWorld> world, SimulationController* controller){
 	diagnostics.log("beginning simulate function", Diagnostics::Topic::Simulation, Diagnostics::Verbosity::Debug);
-	int loopCounter = 0;
+	unsigned int loopCounter = 0;
 	while(true){
 		loopCounter++;
 		diagnostics.monitor("SIMULATION LOOP", std::to_string(loopCounter));

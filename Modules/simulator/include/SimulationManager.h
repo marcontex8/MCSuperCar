@@ -15,10 +15,10 @@ namespace simulation{
 	class SimulationManager
 	{
 	public:
-		SimulatedWorld* simulatedWorld;
+		std::shared_ptr<SimulatedWorld> simulatedWorld;
 		SimulationController simulationController;
 
-		SimulationManager(SimulatedWorld* simulatedWorld);
+		SimulationManager(std::shared_ptr<SimulatedWorld>& simulatedWorld);
 		
 		void beginSimulation();
 		void endSimulation();
@@ -30,7 +30,7 @@ namespace simulation{
 
 	private:
 		std::thread simulation_thread;
-		static void simulate(SimulatedWorld* world, SimulationController* controller);
+		static void simulate(std::shared_ptr<SimulatedWorld> world, SimulationController* controller);
 	};
 
 
